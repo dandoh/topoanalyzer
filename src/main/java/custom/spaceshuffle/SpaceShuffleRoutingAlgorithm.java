@@ -1,9 +1,13 @@
-package routing;
+package custom.spaceshuffle;
+
+import routing.RoutingAlgorithm;
+import routing.RoutingPath;
 
 /**
  * Created by Dandoh on 6/27/17.
  */
-public class SmallWorldRoutingAlgorithm implements RoutingAlgorithm{
+
+public class SpaceShuffleRoutingAlgorithm implements RoutingAlgorithm {
 
     @Override
     public int next(int source, int current, int destination) {

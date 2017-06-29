@@ -16,7 +16,7 @@ public class DiscreteEventSimulator {
     }
 
     public void process() {
-        if (!pq.isEmpty()) {
+        if (!pq.isEmpty() && stime < timeLimit) {
             Event top = pq.poll();
             stime = top.time;
             top.execute();

@@ -4,8 +4,9 @@ package routing;
  * Created by Dandoh on 6/27/17.
  */
 public class ShortestPathRoutingAlgorithm implements RoutingAlgorithm {
+
     @Override
-    public int next(int current, int destination) {
+    public int next(int source, int current, int destination) {
         return 0;
     }
 

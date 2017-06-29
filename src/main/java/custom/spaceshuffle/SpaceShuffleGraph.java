@@ -1,11 +1,13 @@
-package graph;
+package custom.spaceshuffle;
+
+import graph.Graph;
 
 import java.util.List;
 
 /**
  * Created by Dandoh on 6/27/17.
  */
-public class FatTreeGraph extends Graph {
+public class SpaceShuffleGraph extends Graph {
     @Override
     public int V() {
         return 0;
