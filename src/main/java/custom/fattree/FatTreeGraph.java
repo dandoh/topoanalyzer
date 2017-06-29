@@ -151,6 +151,17 @@ public class FatTreeGraph extends Graph {
             }
         }
 
+        // address for core switches
+        for (int j = 1; j <= k / 2; j++) {
+            for (int i = 1; i <= k / 2; i++) {
+                int offset = numPodSwitches + numServers;
+                int switchId = offset + (j - 1) * k / 2 + i - 1;
+                switches.add(switchId);
+            }
+        }
+
+
+
         return switches;
     }
 

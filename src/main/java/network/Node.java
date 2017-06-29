@@ -7,5 +7,10 @@ import networkexp.DiscreteEventSimulator;
  */
 public abstract class Node {
     public int id;
+
+    public Node(int id) {
+        this.id = id;
+    }
+
     public abstract void process(Packet p, DiscreteEventSimulator sim);
 }
