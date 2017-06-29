@@ -12,7 +12,7 @@ import networkexp.Event;
 public class Link {
     private Node u;
     private Node v;
-    private int nextAvailableTime = 0;
+    private long nextAvailableTime = 0;
 
     public Link(Node u, Node v) {
         this.u = u;
@@ -22,7 +22,7 @@ public class Link {
     public void handle(Packet packet, Node input, DiscreteEventSimulator sim) {
         // move packet from input endpoint to output endpoint
         Node output = input == u ? v : u;
-        int currentTime = sim.getTime();
+        long currentTime = sim.getTime();
         if (currentTime >= nextAvailableTime) {
             System.out.println(
                     String.format("Transferring from %d to %d at %d", input.id, output.id, sim.getTime()));
@@ -31,7 +31,7 @@ public class Link {
                 @Override
                 public void execute() {
                     System.out.println(
-                            String.format("Complete transferring from %d to %d at %d", input.id, output.id, sim.getTime()));
+                            String.format("Completed transferring from %d to %d at %d", input.id, output.id, sim.getTime()));
                     output.process(packet, sim);
                 }
             });

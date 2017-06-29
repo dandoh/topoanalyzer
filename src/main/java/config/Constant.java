@@ -9,6 +9,6 @@ public class Constant {
                                                 // = 12000 nanosecond
     public static final int HOST_DELAY = 0;
     public static final int PACKET_SIZE = 12000; // bit
-    public static final int MAX_TIME = (int) 1e6;
+    public static final int MAX_TIME = (int) 1e7;
     public static final int PACKET_INTERVAL = PACKET_SIZE;
 }

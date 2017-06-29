@@ -1,6 +1,5 @@
 package network;
 
-import com.sun.tools.internal.jxc.ap.Const;
 import config.Constant;
 import networkexp.DiscreteEventSimulator;
 import networkexp.Event;
@@ -22,10 +21,13 @@ public class Host extends Node {
         if (id == p.getDestination()) {
             // TODO - save information
             System.out.println(String.format("Host #%d received packet at %d", id, sim.getTime()));
+            sim.numReceived++;
             return;
         }
+
+        sim.numSent++;
         System.out.println(String.format("Host #%d sending packet at %d", id, sim.getTime()));
-        int currentSimTime = sim.getTime();
+        long currentSimTime = sim.getTime();
         sim.addEvent(new Event(currentSimTime + Constant.HOST_DELAY) {
             @Override
             public void execute() {

@@ -26,7 +26,7 @@ public class Switch extends Node {
     public void process(Packet p, DiscreteEventSimulator sim) {
         System.out.println(
                 String.format("Switch #%d processing a packet at %d", id, sim.getTime()));
-        int currentTime = sim.getTime();
+        long currentTime = sim.getTime();
         int nextId = ra.next(p.getSource(), id, p.getDestination());
 
         sim.addEvent(new Event(currentTime + Constant.SWITCH_DELAY) {
