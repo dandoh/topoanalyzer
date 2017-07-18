@@ -23,7 +23,7 @@ public class FatTreeGraph extends Graph {
     private List<Integer> hosts;
 
     public FatTreeGraph(int k) {
-        if (k / 2 == 1) throw new IllegalArgumentException("K must be even");
+        if (k % 2 == 1) throw new IllegalArgumentException("K must be even");
         if (k > 256) throw new IllegalArgumentException("K must less than 256");
 
         this.k = k;

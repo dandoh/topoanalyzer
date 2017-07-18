@@ -1,5 +1,8 @@
 package network;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import config.Constant;
+
 import java.util.List;
 
 /**
@@ -8,6 +11,7 @@ import java.util.List;
 public class Packet {
     private int source;
     private int destination;
+    private int size;
 
     public void setPredeterminedPath(List<Integer> predeterminedPath) {
         this.predeterminedPath = predeterminedPath;
@@ -18,6 +22,7 @@ public class Packet {
     public Packet(int source, int destination) {
         this.source = source;
         this.destination = destination;
+        this.size = Constant.PACKET_SIZE;
     }
 
     public int getSource() {
@@ -26,5 +31,9 @@ public class Packet {
 
     public int getDestination() {
         return destination;
+    }
+
+    public int getSize() {
+        return size;
     }
 }
