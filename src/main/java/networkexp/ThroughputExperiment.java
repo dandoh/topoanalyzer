@@ -43,10 +43,10 @@ public class ThroughputExperiment {
             }
         }
 
-        System.out.println("Done set up");
+//        System.out.println("Done set up");
         sim.process();
-        System.out.println("Num packets sent: " + sim.numSent);
-        System.out.println("Num packets received: " + sim.numReceived);
+//        System.out.println("Num packets sent: " + sim.numSent);
+//        System.out.println("Num packets received: " + sim.numReceived);
 
         return sim.numSent <= sim.numReceived;
     }
@@ -68,6 +68,7 @@ public class ThroughputExperiment {
             }
         }
 
+        StdOut.printf("\n\nMaximum k = %d\n", first);
         long nPacket = trafficPattern.size() * first;
         long throughput = nPacket * Constant.PACKET_SIZE;
         return throughput;
@@ -83,6 +84,7 @@ public class ThroughputExperiment {
         Integer[] destination = G.hosts().toArray(new Integer[0]);
         Knuth.shuffle(destination);
 
+        // TODO: New traffic pattern
         Map<Integer, Integer> traffic = new HashMap<>();
         for (int i = 0; i < sources.length; i++) {
             traffic.put(sources[i], destination[i]);
@@ -92,6 +94,6 @@ public class ThroughputExperiment {
 
 //        StdOut.println(G.hosts().size());
         long throughput = experiment.evaluateThroughput(traffic);
-        StdOut.printf("Through put of network %dGb/s\n", throughput / 1000000);
+        StdOut.printf("\nThrough put of network %dGb/s\n", throughput / 1000000);
     }
 }
