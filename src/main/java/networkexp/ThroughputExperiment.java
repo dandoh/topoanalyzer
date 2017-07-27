@@ -36,7 +36,7 @@ public class ThroughputExperiment {
                 long time = i * timeInterval;
                 final Packet packet = new Packet(source, destination, time);
 
-                sim.addEvent(new Event(time) {
+                sim.addEvent(new Event(time, ++sim.numEvent) {
                     @Override
                     public void execute() {
                         network.getHostById(source).process(packet, sim);
@@ -50,14 +50,14 @@ public class ThroughputExperiment {
 //        System.out.println("Num packets received: " + sim.numReceived);
 
         long averageTime = sim.totalPacketTime / sim.numSent;
-        StdOut.printf("For f = %d, average packet time = %d\n", frequency, averageTime);
+        StdOut.printf("For f = %d, average packet time = %.2fms\n", frequency, averageTime / 1e6);
         return averageTime;
     }
 
     public long evaluateThroughput(Map<Integer, Integer> trafficPattern, double threshold)  {
-//        StdOut.println(measureThroughput(trafficPattern, 1000));
+//        StdOut.println(measureThroughput(trafficPattern, 300));
         long minTime = measureThroughput(trafficPattern, 1);
-        StdOut.printf("Minimum average time = %d\n", minTime);
+        StdOut.printf("Minimum average time = %.2fms\n", minTime / 1e6);
 
         int maxF = Constant.MAX_TIME / Constant.PACKET_INTERVAL;
 
@@ -106,7 +106,9 @@ public class ThroughputExperiment {
 //        traffic.put(3, 17);
 
 //        StdOut.println(G.hosts().size());
-        long throughput = experiment.evaluateThroughput(traffic, 1.3);
+        double threshold = 1.3;
+        StdOut.printf("Thresh hold = %.2f\n", threshold);
+        long throughput = experiment.evaluateThroughput(traffic, threshold);
 //        StdOut.printf("Maximum frequency = %d\n", maxFrequency);
         StdOut.printf("\nThrough put of network %dGb/s\n", throughput / 1000000);
     }

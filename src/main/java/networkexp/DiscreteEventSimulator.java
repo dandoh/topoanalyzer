@@ -14,6 +14,7 @@ public class DiscreteEventSimulator {
     public int numReceived = 0;
     public int numSent = 0;
     public long totalPacketTime = 0;
+    public int numEvent = 0;
     private boolean isLimit;
     private boolean verbose;
 
@@ -23,7 +24,8 @@ public class DiscreteEventSimulator {
         pq = new PriorityQueue<>((e1, e2) -> {
             if (e1.time < e2.time) return -1;
             else if (e1.time > e2.time) return 1;
-            else return 0;
+            else if (e1.id < e2.id) return 1;
+            else return -1;
         });
     }
 

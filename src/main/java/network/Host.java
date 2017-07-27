@@ -37,7 +37,7 @@ public class Host extends Node {
             System.out.println(String.format("Host #%d sending packet at %d", id, sim.getTime()));
         }
 
-        sim.addEvent(new Event(currentSimTime + Constant.HOST_DELAY) {
+        sim.addEvent(new Event(currentSimTime + Constant.HOST_DELAY, ++sim.numEvent) {
             @Override
             public void execute() {
                 link.handle(p, Host.this, sim);

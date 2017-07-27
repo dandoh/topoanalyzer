@@ -5,9 +5,11 @@ package networkexp;
  */
 public abstract class Event {
     public long time;
+    public int id;
 
-    public Event(long time) {
+    public Event(long time, int id) {
         this.time = time;
+        this.id = id;
     }
 
     public abstract void execute();

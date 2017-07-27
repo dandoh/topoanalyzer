@@ -43,7 +43,7 @@ public class Link {
             long latency = serialLatency(packet.getSize()) + propagationLatency();
 
             nextAvailableTime = currentTime + latency;
-            sim.addEvent(new Event(currentTime + latency) {
+            sim.addEvent(new Event(currentTime + latency, ++sim.numEvent) {
                 @Override
                 public void execute() {
                     if (sim.isVerbose()) {
@@ -58,7 +58,7 @@ public class Link {
                 System.out.println(
                         String.format("Transfer from %d to %d delayed at %d", input.id, output.id, sim.getTime()));
             }
-            sim.addEvent(new Event(nextAvailableTime) {
+            sim.addEvent(new Event(nextAvailableTime, ++sim.numEvent) {
                 @Override
                 public void execute() {
                     Link.this.handle(packet, input, sim);
