@@ -13,4 +13,6 @@ public abstract class Node {
     }
 
     public abstract void process(Packet p, DiscreteEventSimulator sim);
+
+    public abstract void clear();
 }

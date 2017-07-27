@@ -1,5 +1,7 @@
 package networkexp;
 
+import common.StdOut;
+
 import java.util.PriorityQueue;
 
 /**
@@ -11,9 +13,13 @@ public class DiscreteEventSimulator {
     private int timeLimit;
     public int numReceived = 0;
     public int numSent = 0;
+    public long totalPacketTime = 0;
+    private boolean isLimit;
+    private boolean verbose;
 
     public DiscreteEventSimulator(int timeLimit) {
         this.timeLimit = timeLimit;
+        this.isLimit = true;
         pq = new PriorityQueue<>((e1, e2) -> {
             if (e1.time < e2.time) return -1;
             else if (e1.time > e2.time) return 1;
@@ -21,8 +27,17 @@ public class DiscreteEventSimulator {
         });
     }
 
+    public DiscreteEventSimulator(boolean isLimit, int timeLimit, boolean verbose) {
+        this(timeLimit);
+        this.isLimit = isLimit;
+        this.verbose = verbose;
+    }
+
     public void process() {
-        while (!pq.isEmpty() && stime < timeLimit) {
+        while (!pq.isEmpty()) {
+            if (isLimit) {
+                if (stime < timeLimit) break;
+            }
             Event top = pq.poll();
             stime = top.time;
             top.execute();
@@ -35,5 +50,9 @@ public class DiscreteEventSimulator {
 
     public long getTime() {
         return stime;
+    }
+
+    public boolean isVerbose() {
+        return verbose;
     }
 }

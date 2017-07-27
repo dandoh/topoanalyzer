@@ -1,5 +1,6 @@
 package network;
 
+import common.StdOut;
 import config.Constant;
 import networkexp.DiscreteEventSimulator;
 import networkexp.Event;
@@ -18,21 +19,34 @@ public class Host extends Node {
 
     @Override
     public void process(Packet p, DiscreteEventSimulator sim) {
+        long currentSimTime = sim.getTime();
+
         if (id == p.getDestination()) {
             // TODO - save information
-            System.out.println(String.format("Host #%d received packet at %d", id, sim.getTime()));
+            if (sim.isVerbose()) {
+                System.out.println(String.format("Host #%d received packet at %d", id, sim.getTime()));
+            }
             sim.numReceived++;
+            p.setEndTime(currentSimTime);
+            sim.totalPacketTime += p.timeTravel();
             return;
         }
 
         sim.numSent++;
-        System.out.println(String.format("Host #%d sending packet at %d", id, sim.getTime()));
-        long currentSimTime = sim.getTime();
+        if (sim.isVerbose()) {
+            System.out.println(String.format("Host #%d sending packet at %d", id, sim.getTime()));
+        }
+
         sim.addEvent(new Event(currentSimTime + Constant.HOST_DELAY) {
             @Override
             public void execute() {
                 link.handle(p, Host.this, sim);
             }
         });
+    }
+
+    @Override
+    public void clear() {
+        link.clear();
     }
 }

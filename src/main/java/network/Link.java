@@ -24,11 +24,11 @@ public class Link {
         this.length= Constant.LINK_LENGTH;
     }
 
-    public int serialLatency(int packetSize) {
-        return (int) (packetSize / this.bandwidth);
+    public long serialLatency(int packetSize) {
+        return (long) (1e9 * packetSize / this.bandwidth);
     }
-    public int propagationLatency() {
-        return (int) (length / Constant.PROPAGATION_VELOCITY);
+    public long propagationLatency() {
+        return (long) (length / Constant.PROPAGATION_VELOCITY);
     }
 
     public void handle(Packet packet, Node input, DiscreteEventSimulator sim) {
@@ -36,23 +36,28 @@ public class Link {
         Node output = input == u ? v : u;
         long currentTime = sim.getTime();
         if (currentTime >= nextAvailableTime) {
-            System.out.println(
-                    String.format("Transferring from %d to %d at %d", input.id, output.id, sim.getTime()));
-
-            int latency = serialLatency(packet.getSize()) + propagationLatency();
+            if (sim.isVerbose()) {
+                System.out.println(
+                        String.format("Transferring from %d to %d at %d", input.id, output.id, sim.getTime()));
+            }
+            long latency = serialLatency(packet.getSize()) + propagationLatency();
 
             nextAvailableTime = currentTime + latency;
             sim.addEvent(new Event(currentTime + latency) {
                 @Override
                 public void execute() {
-                    System.out.println(
-                            String.format("Completed transferring from %d to %d at %d", input.id, output.id, sim.getTime()));
+                    if (sim.isVerbose()) {
+                        System.out.println(
+                                String.format("Completed transferring from %d to %d at %d", input.id, output.id, sim.getTime()));
+                    }
                     output.process(packet, sim);
                 }
             });
         } else {
-            System.out.println(
-                    String.format("Transfer from %d to %d delayed at %d", input.id, output.id, sim.getTime()));
+            if (sim.isVerbose()) {
+                System.out.println(
+                        String.format("Transfer from %d to %d delayed at %d", input.id, output.id, sim.getTime()));
+            }
             sim.addEvent(new Event(nextAvailableTime) {
                 @Override
                 public void execute() {
@@ -60,5 +65,9 @@ public class Link {
                 }
             });
         }
+    }
+
+    public void clear() {
+        this.nextAvailableTime = 0;
     }
 }

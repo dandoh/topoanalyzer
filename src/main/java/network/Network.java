@@ -85,6 +85,12 @@ public class Network {
     }
 
     public void clear() {
+        for (Host host : hosts) {
+            host.clear();
+        }
 
+        for (Switch sw: switches) {
+            sw.clear();
+        }
     }
 }

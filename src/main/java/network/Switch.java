@@ -24,8 +24,10 @@ public class Switch extends Node {
 
     @Override
     public void process(Packet p, DiscreteEventSimulator sim) {
-        System.out.println(
-                String.format("Switch #%d processing a packet at %d", id, sim.getTime()));
+        if (sim.isVerbose()) {
+            System.out.println(
+                    String.format("Switch #%d processing a packet at %d", id, sim.getTime()));
+        }
         long currentTime = sim.getTime();
         int nextId = ra.next(p.getSource(), id, p.getDestination());
 
@@ -36,4 +38,13 @@ public class Switch extends Node {
             }
         });
     }
+
+    @Override
+    public void clear() {
+        for (Map.Entry<Integer, Link> link: this.links.entrySet()) {
+            link.getValue().clear();
+        }
+    }
+
+
 }

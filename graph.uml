@@ -7,7 +7,7 @@
     <node x="224.0" y="256.0">routing.SpaceShuffleRoutingAlgorithm</node>
     <node x="671.1194833153929" y="-190.9779332615716">topo.TopologyExperiment</node>
     <node x="0.0" y="256.0">routing.FatTreeRoutingAlgorithm</node>
-    <node x="1013.4337997847147" y="182.6006458557589">graph.SmallWorldGraph</node>
+    <node x="1013.4337997847147" y="182.6006458557589">custom.smallworld.SmallWorldGraph</node>
     <node x="483.0" y="256.0">routing.SmallWorldRoutingAlgorithm</node>
     <node x="503.0" y="44.0">routing.RoutingAlgorithm</node>
     <node x="1471.4337997847147" y="182.6006458557589">graph.SpaceShuffleGraph</node>
@@ -28,7 +28,7 @@
       <point x="1161.4086383207753" y="-60.54467168998926" />
       <point x="-78.375" y="81.0" />
     </edge>
-    <edge source="graph.SmallWorldGraph" target="graph.Graph">
+    <edge source="custom.smallworld.SmallWorldGraph" target="graph.Graph">
       <point x="0.0" y="-81.0" />
       <point x="1117.9337997847147" y="162.6006458557589" />
       <point x="1206.3087997847147" y="162.6006458557589" />

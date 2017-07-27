@@ -1,4 +1,6 @@
-package graph;
+package custom.smallworld;
+
+import graph.Graph;
 
 import java.util.List;
 
@@ -6,6 +8,9 @@ import java.util.List;
  * Created by Dandoh on 6/27/17.
  */
 public class SmallWorldGraph extends Graph {
+    public SmallWorldGraph() {
+
+    }
     @Override
     public int V() {
         return 0;

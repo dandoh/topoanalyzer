@@ -12,6 +12,8 @@ public class Packet {
     private int source;
     private int destination;
     private int size;
+    private long startTime;
+    private long endTime;
 
     public void setPredeterminedPath(List<Integer> predeterminedPath) {
         this.predeterminedPath = predeterminedPath;
@@ -19,10 +21,11 @@ public class Packet {
 
     private List<Integer> predeterminedPath;
 
-    public Packet(int source, int destination) {
+    public Packet(int source, int destination, long startTime) {
         this.source = source;
         this.destination = destination;
         this.size = Constant.PACKET_SIZE;
+        this.startTime = startTime;
     }
 
     public int getSource() {
@@ -35,5 +38,21 @@ public class Packet {
 
     public int getSize() {
         return size;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public long timeTravel() {
+        return endTime - startTime;
     }
 }
