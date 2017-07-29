@@ -24,8 +24,8 @@ public class DiscreteEventSimulator {
         pq = new PriorityQueue<>((e1, e2) -> {
             if (e1.time < e2.time) return -1;
             else if (e1.time > e2.time) return 1;
-            else if (e1.id < e2.id) return 1;
-            else return -1;
+            else if (e1.id < e2.id) return -1;
+            else return 1;
         });
     }
 
