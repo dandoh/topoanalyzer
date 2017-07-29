@@ -24,6 +24,29 @@ public class ThroughputExperiment {
         this.network = network;
     }
 
+    public long minAveragePacketTime(Map<Integer, Integer> trafficPattern) {
+        DiscreteEventSimulator sim = new DiscreteEventSimulator(false, Constant.MAX_TIME, false);
+        network.clear();
+
+        for (Integer source : trafficPattern.keySet()) {
+            Integer destination = trafficPattern.get(source);
+
+            final Packet packet = new Packet(source, destination, sim.getTime());
+
+            sim.addEvent(new Event(sim.getTime(), ++sim.numEvent) {
+                @Override
+                public void execute() {
+                        network.getHostById(source).process(packet, sim);
+                    }
+            });
+
+            sim.process();
+        }
+
+        long averageTime = sim.totalPacketTime / sim.numSent;
+        return averageTime;
+    }
+
     public long measureThroughput(Map<Integer, Integer> trafficPattern, long frequency) {
         DiscreteEventSimulator sim = new DiscreteEventSimulator(false, Constant.MAX_TIME, false);
         network.clear(); // clear all the data, queue, ... in switches, hosts
@@ -56,7 +79,7 @@ public class ThroughputExperiment {
 
     public long evaluateThroughput(Map<Integer, Integer> trafficPattern, double threshold)  {
 //        StdOut.println(measureThroughput(trafficPattern, 300));
-        long minTime = measureThroughput(trafficPattern, 1);
+        long minTime = minAveragePacketTime(trafficPattern);
         StdOut.printf("Minimum average time = %.2fms\n", minTime / 1e6);
 
         int maxF = Constant.MAX_TIME / Constant.PACKET_INTERVAL;
