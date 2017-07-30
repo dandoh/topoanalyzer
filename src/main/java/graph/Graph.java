@@ -1,5 +1,8 @@
 package graph;
 
+import custom.smallworld.GridGraph;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
