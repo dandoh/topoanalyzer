@@ -80,7 +80,7 @@ public class ThroughputExperiment {
     public long evaluateThroughput(Map<Integer, Integer> trafficPattern, double threshold)  {
 //        StdOut.println(measureThroughput(trafficPattern, 300));
         long minTime = minAveragePacketTime(trafficPattern);
-        StdOut.printf("Minimum average time = %.2fms\n", minTime / 1e6);
+        StdOut.printf("Minimum average time = %.2fms\n\n", minTime / 1e6);
 
         int maxF = Constant.MAX_TIME / Constant.PACKET_INTERVAL;
 
@@ -105,7 +105,7 @@ public class ThroughputExperiment {
     }
 
     public static void main(String[] args) {
-        FatTreeGraph G = new FatTreeGraph(8);
+        FatTreeGraph G = new FatTreeGraph(16);
         RoutingAlgorithm ra = new FatTreeRoutingAlgorithm(G, false);
 //        FullGraph G = new FullGraph(8);
 //        RoutingAlgorithm ra = new FullRoutingAlgorithm(G);
@@ -129,7 +129,7 @@ public class ThroughputExperiment {
 //        traffic.put(3, 17);
 
 //        StdOut.println(G.hosts().size());
-        double threshold = 1.3;
+        double threshold = 1.1;
         StdOut.printf("Thresh hold = %.2f\n", threshold);
         long throughput = experiment.evaluateThroughput(traffic, threshold);
 //        StdOut.printf("Maximum frequency = %d\n", maxFrequency);

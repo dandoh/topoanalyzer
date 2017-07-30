@@ -29,6 +29,10 @@ public abstract class Graph {
 
     public List<Integer> adj(int v) { return adj[v]; }
 
+    public int degree(int u) {
+        return adj[u].size();
+    }
+
     public abstract List<Integer> hosts();
 
     public abstract List<Integer> switches();
