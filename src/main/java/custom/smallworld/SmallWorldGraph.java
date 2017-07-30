@@ -180,6 +180,39 @@ public class SmallWorldGraph extends GridGraph{
         return result;
     }
 
+    public List<List<Integer>> kHopNeighbor(int id, int k) {
+
+        List<List<Integer>> neighbors = new ArrayList<List<Integer>>();
+        Queue<Integer> queue = new LinkedList<>();
+
+        boolean[] visited = new boolean[V];
+        int[] trace = new int[this.V];
+        queue.add(id);
+        visited[id] = true;
+        trace[id] = -1;
+        for (int i = 0; i < k; i++) {
+            int uNode = queue.remove();
+            for (int vNode : adj(uNode)) {
+                if (!visited[vNode] && isSwitchVertex(vNode)) {
+                    visited[vNode] = true;
+                    queue.add(vNode);
+                    trace[vNode] = uNode;
+
+                    int nextNode = vNode;
+                    while (trace[nextNode] != id) {
+                        nextNode = trace[nextNode];
+                    }
+                    List<Integer> info = new ArrayList<>();
+                    info.add(vNode);
+                    info.add(i + 1);
+                    info.add(nextNode);
+                    neighbors.add(info);
+                }
+            }
+        }
+        return neighbors;
+    }
+
     public static void main(String[] args) {
         long time = System.currentTimeMillis();
 

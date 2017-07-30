@@ -112,6 +112,15 @@ public class GridGraph extends Graph {
         return v < nSwitch;
     }
 
+    public List<Integer> getHostsOfSwitch(int sid) {
+        List<Integer> result = new ArrayList<>();
+        for (int i : adj(sid)) {
+            if (hosts().contains(i))
+                result.add(i);
+        }
+        return result;
+    }
+
     public int vertexIndex(int row, int col) {
         return row * this.nCol + col;
     }

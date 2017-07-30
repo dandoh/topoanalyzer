@@ -1,5 +1,6 @@
 package network;
 
+import common.StdOut;
 import config.Constant;
 import networkexp.DiscreteEventSimulator;
 import networkexp.Event;

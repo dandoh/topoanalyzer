@@ -24,8 +24,8 @@ public class ThroughputExperiment {
         this.network = network;
     }
 
-    public long minAveragePacketTime(Map<Integer, Integer> trafficPattern) {
-        DiscreteEventSimulator sim = new DiscreteEventSimulator(false, Constant.MAX_TIME, false);
+    public long minAveragePacketTime(Map<Integer, Integer> trafficPattern, boolean verbose) {
+        DiscreteEventSimulator sim = new DiscreteEventSimulator(false, Constant.MAX_TIME, verbose);
         network.clear();
 
         for (Integer source : trafficPattern.keySet()) {
@@ -47,8 +47,8 @@ public class ThroughputExperiment {
         return averageTime;
     }
 
-    public long measureThroughput(Map<Integer, Integer> trafficPattern, long frequency) {
-        DiscreteEventSimulator sim = new DiscreteEventSimulator(false, Constant.MAX_TIME, false);
+    public long measureThroughput(Map<Integer, Integer> trafficPattern, long frequency, boolean verbose) {
+        DiscreteEventSimulator sim = new DiscreteEventSimulator(false, Constant.MAX_TIME, verbose);
         network.clear(); // clear all the data, queue, ... in switches, hosts
 
         long timeInterval = Constant.MAX_TIME / frequency;
@@ -77,9 +77,9 @@ public class ThroughputExperiment {
         return averageTime;
     }
 
-    public long evaluateThroughput(Map<Integer, Integer> trafficPattern, double threshold)  {
+    public long evaluateThroughput(Map<Integer, Integer> trafficPattern, double threshold, boolean verbose)  {
 //        StdOut.println(measureThroughput(trafficPattern, 300));
-        long minTime = minAveragePacketTime(trafficPattern);
+        long minTime = minAveragePacketTime(trafficPattern, verbose);
         StdOut.printf("Minimum average time = %.2fms\n\n", minTime / 1e6);
 
         int maxF = Constant.MAX_TIME / Constant.PACKET_INTERVAL;
@@ -91,7 +91,7 @@ public class ThroughputExperiment {
             int mid = (first + last) / 2;
             StdOut.printf("Measure Throughput with f = %d\n", mid);
 
-            if (measureThroughput(trafficPattern, mid) < minTime * threshold) {
+            if (measureThroughput(trafficPattern, mid, verbose) < minTime * threshold) {
                 first = mid;
             } else {
                 last = mid;
@@ -131,7 +131,7 @@ public class ThroughputExperiment {
 //        StdOut.println(G.hosts().size());
         double threshold = 1.1;
         StdOut.printf("Thresh hold = %.2f\n", threshold);
-        long throughput = experiment.evaluateThroughput(traffic, threshold);
+        long throughput = experiment.evaluateThroughput(traffic, threshold, false);
 //        StdOut.printf("Maximum frequency = %d\n", maxFrequency);
         StdOut.printf("\nThrough put of network %dGb/s\n", throughput / 1000000);
     }
