@@ -2,8 +2,7 @@ package graph;
 
 import custom.smallworld.GridGraph;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public abstract class Graph {
@@ -43,4 +42,35 @@ public abstract class Graph {
     public abstract boolean isHostVertex(int v);
 
     public abstract boolean isSwitchVertex(int v);
+
+    public List<Integer> shortestPath(int u, int v) {
+        Queue<Integer> queue = new LinkedList<Integer>();
+        List<Integer> path = new ArrayList<>();
+        boolean[] visited = new boolean[this.V];
+        int[] trace = new int[this.V];
+        queue.add(u);
+        visited[u] = true;
+        trace[u] = -1;
+        while(!queue.isEmpty()) {
+            int uNode = queue.remove();
+            if (uNode == v) {
+                path.add(v);
+                while(trace[v] != -1) {
+                    v = trace[v];
+                    path.add(v);
+                }
+                Collections.reverse(path);
+                break;
+            }
+
+            for (int vNode:this.adj(uNode)) {
+                if (!visited[vNode] && isSwitchVertex(vNode)) {
+                    visited[vNode] = true;
+                    trace[vNode] = uNode;
+                    queue.add(vNode);
+                }
+            }
+        }
+        return path;
+    }
 }

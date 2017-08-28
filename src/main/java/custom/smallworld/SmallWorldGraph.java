@@ -43,6 +43,13 @@ public class SmallWorldGraph extends GridGraph{
         generateVariedDegree(alphas, isBounded);
     }
 
+    /**
+     * Constructor for non-random links
+     */
+    public SmallWorldGraph(String baseType, int nRow, int nCol) {
+        super(nRow, nCol, baseType);
+    }
+
     public void addEdge(int u, int v, int alphaIndex) {
         addEdge(u, v);
 

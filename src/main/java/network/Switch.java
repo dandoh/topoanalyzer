@@ -31,7 +31,7 @@ public class Switch extends Node {
         }
         long currentTime = sim.getTime();
         int nextId = ra.next(p.getSource(), id, p.getDestination());
-
+//        StdOut.printf("%d %d\n", id, nextId);
         sim.addEvent(new Event(currentTime + Constant.SWITCH_DELAY, ++sim.numEvent) {
             @Override
             public void execute() {

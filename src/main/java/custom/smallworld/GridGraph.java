@@ -2,9 +2,7 @@ package custom.smallworld;
 
 import graph.Graph;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Created by mta on 7/25/17.
@@ -14,8 +12,8 @@ public class GridGraph extends Graph {
     private List<Integer> switches;
     private List<Integer> hosts;
 
-    private final int nRow;
-    private final int nCol;
+    protected final int nRow;
+    protected final int nCol;
     private final String baseType;
     private final int nHost;
     private final int nSwitch;
@@ -156,6 +154,14 @@ public class GridGraph extends Graph {
 
             return Math.abs(ux - vx) + Math.abs(uy - vy);
         }
+    }
+
+    public int manhattanDistance(int u, int v) {
+        int ux = u % nCol;
+        int uy = u / nCol;
+        int vx = v % nCol;
+        int vy = v / nCol;
+        return Math.abs(ux - vx) + Math.abs(uy - vy);
     }
 
     /**

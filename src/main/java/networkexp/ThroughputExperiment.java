@@ -78,7 +78,7 @@ public class ThroughputExperiment {
     }
 
     public long evaluateThroughput(Map<Integer, Integer> trafficPattern, double threshold, boolean verbose)  {
-//        StdOut.println(measureThroughput(trafficPattern, 300));
+//        StdOut.println(measureThroughput(trafficPattern, 1, false));
         long minTime = minAveragePacketTime(trafficPattern, verbose);
         StdOut.printf("Minimum average time = %.2fms\n\n", minTime / 1e6);
 
@@ -105,7 +105,7 @@ public class ThroughputExperiment {
     }
 
     public static void main(String[] args) {
-        FatTreeGraph G = new FatTreeGraph(16);
+        FatTreeGraph G = new FatTreeGraph(8);
         RoutingAlgorithm ra = new FatTreeRoutingAlgorithm(G, false);
 //        FullGraph G = new FullGraph(8);
 //        RoutingAlgorithm ra = new FullRoutingAlgorithm(G);
