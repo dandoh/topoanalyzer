@@ -32,7 +32,6 @@ public class NeighborTable {
     public void addBrRoute(int destination, int nextHop, int hop) {
         if (!brTable.containsKey(destination) || brTable.get(destination).get(1) > hop) {
             brTable.put(destination, Arrays.asList(nextHop, hop));
-//          StdOut.printf("%d %d %d\n", destination, nextHop, hop);
         }
     }
 

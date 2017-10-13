@@ -43,10 +43,16 @@ public class NeighborGraph extends SmallWorldGraph {
     }
 
     public boolean isRandomLink(int u, int v) {
+        if (!isSwitchVertex(u) || !isSwitchVertex(v))
+            return false;
+
         return !(Math.abs(u - v) == 1 ) && !(Math.abs(u -v) == nCol);
     }
 
     public boolean isNeighbor(int u, int v) {
+        if (!isSwitchVertex(u) || !isSwitchVertex(v))
+            return false;
+
         return manhattanDistance(u, v) <= delta;
     }
 }

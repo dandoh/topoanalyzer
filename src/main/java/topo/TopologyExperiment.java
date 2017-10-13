@@ -22,9 +22,10 @@ public class TopologyExperiment {
     public void fullAnalysis() {
         List<Tuple<Integer, Integer>> pairs = new ArrayList<>();
 
-        for (int u = 0; u < graph.V() - 1; u++)
-            for (int v = u + 1; v < graph.V(); v++)
-                pairs.add(new Tuple<>(u, v));
+        for (int u : graph.switches())
+            for (int v : graph.switches())
+                if (u < v)
+                    pairs.add(new Tuple<>(u, v));
 
         int diameter = 0;
         int totalPath = 0;
