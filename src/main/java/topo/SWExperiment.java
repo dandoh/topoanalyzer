@@ -35,7 +35,6 @@ public class SWExperiment {
 
         RoutingAlgorithm ra = new ShortestPathRoutingAlgorithm(graph);
         TopologyExperiment topo = new TopologyExperiment(graph, ra);
-        topo.fullAnalysis();
 
         StdOut.printf("Diameter: %d\n", topo.diameter());
         StdOut.printf("Average routing path length: %.3f\n", topo.averagePathLength());

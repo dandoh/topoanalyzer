@@ -1,12 +1,12 @@
 package custom.neighbor;
 
+import common.Tuple;
 import custom.smallworld.SmallWorldGraph;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class NeighborGraph extends SmallWorldGraph {
@@ -16,7 +16,7 @@ public class NeighborGraph extends SmallWorldGraph {
     public NeighborGraph(int nRow, int nCol, String baseType, int delta) {
         super(nRow, nCol, baseType, new double[]{0, 0});
 
-        this.k = 0;
+        this.k = 1;
         this.delta = delta;
     }
 
@@ -54,5 +54,55 @@ public class NeighborGraph extends SmallWorldGraph {
             return false;
 
         return manhattanDistance(u, v) <= delta;
+    }
+
+    public double cableLength() {
+        double totalLength = totalCableLength();
+        if (k == 1)
+            return totalLength;
+
+        for (int u : switches()) {
+            HashMap<Integer, List<Integer>> neighbor = neighborTable(u);
+            for (int v : neighbor.keySet())
+                if (!hasEdge(u, v) && manhattanDistance(u, v) <= k)
+                    totalLength += euclidDistance(u, v);
+        }
+
+        return totalLength;
+    }
+
+    public HashMap<Integer, List<Integer>> neighborTable(int source) {
+        HashMap<Integer, List<Integer>> table = new HashMap<>();
+
+        Queue<Tuple<Integer, Integer>> queue = new LinkedList<>();
+        boolean[] visited = new boolean[V];
+        int[] trace = new int[V];
+
+        queue.add(new Tuple<>(source, 0));
+        visited[source] = true;
+        trace[source] = -1;
+        while(!queue.isEmpty()) {
+            Tuple next = queue.remove();
+            int uNode = (int) next.a;
+            int hop = (int) next.b;
+            if (hop > 0 && hop <= delta) {
+                int v = uNode;
+                while(trace[v] != source) {
+                    v = trace[v];
+                }
+                table.put(uNode, Arrays.asList(v, hop));
+            }
+
+            if (hop == delta) continue;
+
+            for (int vNode : adj(uNode)) {
+                if (isSwitchVertex(vNode) && !visited[vNode] && !isRandomLink(uNode, vNode)) {//graph.manhattanDistance(source, vNode) <= delta) {
+                    visited[vNode] = true;
+                    trace[vNode] = uNode;
+                    queue.add(new Tuple<>(vNode, hop + 1));
+                }
+            }
+        }
+        return table;
     }
 }

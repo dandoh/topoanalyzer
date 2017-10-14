@@ -40,21 +40,19 @@ public class BigNBRRoutingAlgorithm extends NeighborRoutingAlgorithm {
         }
 
         // Receive bridges from neighborhood if does not
-        if (table.brTable.size() == table.br1.size() + table.br2.size()) {
+        if (!table.isReceiveBr) {
             // Receive Br from u's neighbors
             this.getBrFromNeighbor(current);
+            table.isReceiveBr = true;
         }
 
         nextNeighbor = this.getNextBrNode(current, desSwitch);
 
-        if (nextNeighbor > -1)
+//        StdOut.printf("%d %d %d\n", current, desSwitch, nextNeighbor);
+        if (nextNeighbor > -1) {
             return nextNeighbor;
+        }
 
         return this.findShortestPath(current, destination);
-    }
-
-    @Override
-    public RoutingPath path(int source, int destination) {
-        return null;
     }
 }

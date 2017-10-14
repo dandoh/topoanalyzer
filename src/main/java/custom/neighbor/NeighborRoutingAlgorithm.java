@@ -10,7 +10,7 @@ import java.util.*;
 
 public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
     protected NeighborGraph graph;
-    protected Map<Integer, NeighborTable> tables;
+    public Map<Integer, NeighborTable> tables;
 
     public NeighborRoutingAlgorithm() {
     }
@@ -63,7 +63,7 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
 
     protected void updateSelfTable(int u) {
         NeighborTable table = this.tables.get(u);
-        table.setNeighborTable(this.neighborTable(u, graph.delta));
+        table.setNeighborTable(this.neighborTable(u));
 
         // Find br1
         for (int w : graph.adj(u)) {
@@ -88,8 +88,12 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
         for (Map.Entry<Integer, List<Integer>> entry : table.neighborTable.entrySet()) {
             int v = entry.getKey();
             List<Integer> info = entry.getValue();
-
             NeighborTable vTable = tables.get(v);
+
+            if (vTable.neighborTable.isEmpty()) {
+                updateSelfTable(v);
+            }
+
             // Receive br1 from v
             for (Map.Entry<Integer, Integer> brEntry : vTable.br1.entrySet()) {
                 table.addBrRoute(brEntry.getKey(), info.get(0), info.get(1) + 1);
@@ -142,12 +146,13 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
                 System.exit(1);
                 break;
             }
-            routingPath.path.add(source);
+            routingPath.path.add(current);
             current = this.next(source, current, destination);
             if (current == -1)
                 return null;
         }
         routingPath.path.add(destination);
+        updatePathByK(routingPath.path);
 
         return routingPath;
     }
@@ -168,39 +173,39 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
         return nextHop;
     }
 
-    private HashMap<Integer, List<Integer>> neighborTable(int source, int delta) {
-        HashMap<Integer, List<Integer>> table = new HashMap<>();
-
-        Queue<Tuple<Integer, Integer>> queue = new LinkedList<>();
-        boolean[] visited = new boolean[graph.V()];
-        int[] trace = new int[graph.V()];
-
-        queue.add(new Tuple<>(source, 0));
-        visited[source] = true;
-        trace[source] = -1;
-        while(!queue.isEmpty()) {
-            Tuple next = queue.remove();
-            int uNode = (int) next.a;
-            int hop = (int) next.b;
-            if (hop > 0 && hop <= delta) {
-                int v = uNode;
-                while(trace[v] != source) {
-                    v = trace[v];
-                }
-                table.put(uNode, Arrays.asList(v, hop));
+    public void updatePathByK(List<Integer> path) {
+        // Update link at the begin of path
+        int lastIndex = 0;
+        for (int i = 1; i < path.size(); i++) {
+            if (graph.isRandomLink(path.get(i - 1), path.get(i)) || graph.manhattanDistance(path.get(0), path.get(i)) > graph.k) {
+                break;
             }
+            lastIndex = i;
+        }
 
-            if (hop == delta) continue;
-
-            for (int vNode : graph.adj(uNode)) {
-                if (graph.isSwitchVertex(vNode) && !visited[vNode] && !graph.isRandomLink(uNode, vNode)) {//graph.manhattanDistance(source, vNode) <= delta) {
-                    visited[vNode] = true;
-                    trace[vNode] = uNode;
-                    queue.add(new Tuple<>(vNode, hop + 1));
-                }
+        if (lastIndex > 0) {
+            for (int i = lastIndex - 1; i >= 1; i--) {
+                path.remove(i);
             }
         }
-        return table;
+
+        int last = path.size() - 1;
+        int firstIndex = last;
+        for (int i = last - 1; i >= 0; i--) {
+            if (graph.isRandomLink(path.get(i), path.get(i + 1)) || graph.manhattanDistance(path.get(last), path.get(i)) > graph.k) {
+                break;
+            }
+            firstIndex = i;
+        }
+
+        if (firstIndex < last) {
+            for (int i = last - 1; i >= firstIndex + 1; i--)
+                path.remove(i);
+        }
+    }
+
+    private HashMap<Integer, List<Integer>> neighborTable(int source) {
+        return graph.neighborTable(source);
     }
 
     protected int findShortestPath(int source, int destination) {
@@ -211,11 +216,11 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
         queue.add(source);
         visited[source] = true;
         trace[source] = -1;
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             int u = queue.remove();
             if (u == destination) {
                 path.add(u);
-                while(trace[u] != -1) {
+                while (trace[u] != -1) {
                     u = trace[u];
                     path.add(0, u);
                     tables.get(u).addBrRoute(destination, path.get(1), path.size() - 1);

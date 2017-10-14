@@ -9,6 +9,7 @@ public class NeighborTable {
     public HashMap<Integer, Integer> br1;
     public HashMap<Integer, Integer> br2;
     public HashMap<Integer, List<Integer>> brTable;
+    public boolean isReceiveBr = false;
 
     public NeighborTable() {
         neighborTable = new HashMap<>();
