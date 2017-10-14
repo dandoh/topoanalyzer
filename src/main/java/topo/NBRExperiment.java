@@ -1,6 +1,7 @@
 package topo;
 
 import common.StdOut;
+import custom.neighbor.BigNBRRoutingAlgorithm;
 import custom.neighbor.NeighborGraph;
 import custom.neighbor.NeighborRoutingAlgorithm;
 
@@ -31,11 +32,12 @@ public class NBRExperiment {
 
             StdOut.printf("Build routing algorithm...");
             NeighborRoutingAlgorithm ra = new NeighborRoutingAlgorithm(graph);
+//            BigNBRRoutingAlgorithm ra = new BigNBRRoutingAlgorithm(graph);
             StdOut.printf("Done!\n");
 
             StdOut.printf("Calculating...");
+            int nPair = 1000;
             TopologyExperiment topo = new TopologyExperiment(graph, ra);
-            topo.fullAnalysis();
             StdOut.printf("Done!\n");
 
             StdOut.printf("Diameter: %d\n", topo.diameter());
