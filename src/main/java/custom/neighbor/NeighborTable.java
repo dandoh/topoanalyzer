@@ -9,6 +9,7 @@ public class NeighborTable {
     public HashMap<Integer, Integer> br1;
     public HashMap<Integer, Integer> br2;
     public HashMap<Integer, List<Integer>> brTable;
+    public boolean isReceiveBr = false;
 
     public NeighborTable() {
         neighborTable = new HashMap<>();
@@ -32,7 +33,6 @@ public class NeighborTable {
     public void addBrRoute(int destination, int nextHop, int hop) {
         if (!brTable.containsKey(destination) || brTable.get(destination).get(1) > hop) {
             brTable.put(destination, Arrays.asList(nextHop, hop));
-//          StdOut.printf("%d %d %d\n", destination, nextHop, hop);
         }
     }
 

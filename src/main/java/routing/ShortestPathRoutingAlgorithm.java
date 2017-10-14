@@ -41,13 +41,22 @@ public class ShortestPathRoutingAlgorithm implements RoutingAlgorithm {
         for (int i = 0; i < path.size() - 1; i++) {
             paths.get(path.get(i)).put(desSwitch, path.get(i + 1));
         }
-//        StdOut.println(path);
-//        StdOut.printf("%d %d %d %d\n", source, current, desSwitch, path.get(1));
         return path.get(1);
     }
 
     @Override
     public RoutingPath path(int source, int destination) {
-        return null;
+        RoutingPath routingPath = new RoutingPath();
+
+        int current = source;
+        while (current != destination) {
+            routingPath.path.add(source);
+            current = this.next(source, current, destination);
+            if (current == -1)
+                return null;
+        }
+        routingPath.path.add(destination);
+
+        return routingPath;
     }
 }

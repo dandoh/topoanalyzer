@@ -164,6 +164,14 @@ public class GridGraph extends Graph {
         return Math.abs(ux - vx) + Math.abs(uy - vy);
     }
 
+    public double euclidDistance(int u, int v) {
+        int ux = u % nCol;
+        int uy = u / nCol;
+        int vx = v % nCol;
+        int vy = v / nCol;
+        return Math.sqrt(Math.pow(ux - vx, 2) + Math.pow(uy - vy, 2));
+    }
+
     /**
      * Returns a string representation of this graph.
      *
@@ -189,4 +197,14 @@ public class GridGraph extends Graph {
         return s.toString();
     }
 
+    public double totalCableLength() {
+        double totalLength = 0;
+        for (int u : switches())
+            for (int v : adj(u))
+                if (isSwitchVertex(v) && u < v) {
+                    totalLength += euclidDistance(u, v);
+                }
+
+        return totalLength;
+    }
 }
