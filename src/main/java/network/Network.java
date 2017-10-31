@@ -40,7 +40,7 @@ public class Network {
 
         // link from switch to host
         for (Host host : hosts) {
-            // get neighbor switch
+            // get corra switch
             int nsid = graph.adj(host.id)
                     .get(0);
             Switch csw = switchById.get(nsid);

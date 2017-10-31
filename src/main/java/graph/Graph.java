@@ -43,6 +43,10 @@ public abstract class Graph {
 
     public abstract boolean isSwitchVertex(int v);
 
+    public double pathCableLength(List<Integer> path) {
+        return 0;
+    }
+
     public List<Integer> shortestPath(int u, int v) {
         Queue<Integer> queue = new LinkedList<Integer>();
         List<Integer> path = new ArrayList<>();

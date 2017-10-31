@@ -1,4 +1,4 @@
-package custom.neighbor;
+package custom.corra;
 
 import common.Tuple;
 import custom.smallworld.SmallWorldGraph;
@@ -9,18 +9,18 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class NeighborGraph extends SmallWorldGraph {
+public class CORRAGraph extends SmallWorldGraph {
     public int delta;
     public int k;
 
-    public NeighborGraph(int nRow, int nCol, String baseType, int delta) {
+    public CORRAGraph(int nRow, int nCol, String baseType, int delta) {
         super(nRow, nCol, baseType, new double[]{0, 0});
 
         this.k = 1;
         this.delta = delta;
     }
 
-    public NeighborGraph(int size, int nCol, String fileEdge, String fileGeo, int delta, int k) {
+    public CORRAGraph(int size, int nCol, String fileEdge, String fileGeo, int delta, int k) {
         super("grid", size / nCol, nCol);
 
         this.delta = delta;

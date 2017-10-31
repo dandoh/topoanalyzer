@@ -1,8 +1,7 @@
 package topo;
 
 import common.StdOut;
-import custom.neighbor.NeighborGraph;
-import custom.neighbor.NeighborRoutingAlgorithm;
+import custom.corra.CORRAGraph;
 
 public class NRBCableLength {
     public static void main(String[] args) {
@@ -21,7 +20,7 @@ public class NRBCableLength {
             String fileEdge = prefix + ".edges";
             String fileGeo = prefix + ".geo";
 
-            NeighborGraph graph = new NeighborGraph(size, xSize, fileEdge, fileGeo, delta, k);
+            CORRAGraph graph = new CORRAGraph(size, xSize, fileEdge, fileGeo, delta, k);
 
             StdOut.println(graph.cableLength());
         }

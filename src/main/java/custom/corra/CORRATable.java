@@ -1,17 +1,17 @@
-package custom.neighbor;
+package custom.corra;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class NeighborTable {
+public class CORRATable {
     public HashMap<Integer, List<Integer>> neighborTable;
     public HashMap<Integer, Integer> br1;
     public HashMap<Integer, Integer> br2;
     public HashMap<Integer, List<Integer>> brTable;
     public boolean isReceiveBr = false;
 
-    public NeighborTable() {
+    public CORRATable() {
         neighborTable = new HashMap<>();
         br1 = new HashMap<>();
         br2 = new HashMap<>();

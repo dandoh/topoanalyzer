@@ -1,26 +1,28 @@
-package custom.neighbor;
+package custom.corra;
 
 import common.StdOut;
-import common.Tuple;
-import network.RoutingTable;
 import routing.RoutingAlgorithm;
 import routing.RoutingPath;
 
 import java.util.*;
 
-public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
-    protected NeighborGraph graph;
-    public Map<Integer, NeighborTable> tables;
+public class CORRARoutingAlgorithm implements RoutingAlgorithm {
+    protected CORRAGraph graph;
+    public Map<Integer, CORRATable> tables;
 
-    public NeighborRoutingAlgorithm() {
+    public int nBr1 = 0;
+    public int nBr2 = 0;
+    public int nSTP = 0;
+
+    public CORRARoutingAlgorithm() {
     }
 
-    public NeighborRoutingAlgorithm(NeighborGraph graph) {
+    public CORRARoutingAlgorithm(CORRAGraph graph) {
         this.graph = graph;
 
         tables = new HashMap<>();
         for (int u : graph.switches()) {
-            tables.put(u, new NeighborTable());
+            tables.put(u, new CORRATable());
         }
 
         buildTables();
@@ -41,7 +43,7 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
         // Fill missing route to node
         int nMiss = 0;
         for (int u : graph.switches()) {
-            NeighborTable table = tables.get(u);
+            CORRATable table = tables.get(u);
             for (int v : graph.switches())
                 if (u != v) {
                     boolean check = false;
@@ -62,7 +64,7 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
     }
 
     protected void updateSelfTable(int u) {
-        NeighborTable table = this.tables.get(u);
+        CORRATable table = this.tables.get(u);
         table.setNeighborTable(this.neighborTable(u));
 
         // Find br1
@@ -83,12 +85,12 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
     }
 
     protected void getBrFromNeighbor(int u) {
-        NeighborTable table = tables.get(u);
+        CORRATable table = tables.get(u);
         // Receive bridges from u's neighbors
         for (Map.Entry<Integer, List<Integer>> entry : table.neighborTable.entrySet()) {
             int v = entry.getKey();
             List<Integer> info = entry.getValue();
-            NeighborTable vTable = tables.get(v);
+            CORRATable vTable = tables.get(v);
 
             if (vTable.neighborTable.isEmpty()) {
                 updateSelfTable(v);
@@ -115,7 +117,7 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
         }
         int desSwitch = graph.isHostVertex(destination) ? graph.adj(destination).get(0) : destination;
 
-        NeighborTable table = tables.get(current);
+        CORRATable table = tables.get(current);
         int nextNeighbor = table.getNextNeighborNode(desSwitch);
         if (nextNeighbor > -1) {
             return nextNeighbor;
@@ -136,7 +138,7 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
         while (current != destination) {
             count++;
             if (count > 100) {
-                NeighborTable table = tables.get(current);
+                CORRATable table = tables.get(current);
 
                 StdOut.printf("%d %d %d\n", current, source, destination);
                 StdOut.println(table.getNextNeighborNode(destination));
@@ -158,7 +160,7 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
     }
 
     protected int getNextBrNode(int sourceSwitch, int desSwitch) {
-        NeighborTable table = tables.get(sourceSwitch);
+        CORRATable table = tables.get(sourceSwitch);
         int nextHop = -1;
         int minHop = Integer.MAX_VALUE;
         for (Map.Entry<Integer, List<Integer>> entry : table.brTable.entrySet()) {
@@ -238,5 +240,17 @@ public class NeighborRoutingAlgorithm implements RoutingAlgorithm {
             }
         }
         return -1;
+    }
+
+    public long totalRTS() {
+        long total = 0;
+        for (CORRATable table : this.tables.values()) {
+            total += table.size();
+        }
+        return total;
+    }
+
+    public double avgRTS() {
+        return 1.0 * this.totalRTS() / this.tables.size();
     }
 }

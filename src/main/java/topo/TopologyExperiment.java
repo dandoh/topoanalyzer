@@ -1,13 +1,10 @@
 package topo;
 
-import common.RandomSet;
 import common.StdOut;
 import common.Tuple;
-import custom.neighbor.BigNBRRoutingAlgorithm;
-import custom.neighbor.NeighborRoutingAlgorithm;
+import custom.corra.CORRARoutingAlgorithm;
 import graph.Graph;
 import routing.RoutingAlgorithm;
-import routing.RoutingPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +13,19 @@ import java.util.Random;
 public class TopologyExperiment {
     private Graph graph;
     private RoutingAlgorithm routingAlgorithm;
+    private boolean isFull;
+
     private int diameter;
     private double arpl;
+    private double totalLatency;
+    private double avgLatency;
+    private double avgRTS;
 
     public TopologyExperiment(Graph graph, RoutingAlgorithm routingAlgorithm) {
         this.graph = graph;
         this.routingAlgorithm = routingAlgorithm;
 
+        this.isFull = true;
         fullAnalysis();
     }
 
@@ -30,6 +33,7 @@ public class TopologyExperiment {
         this.graph = graph;
         this.routingAlgorithm = routingAlgorithm;
 
+        this.isFull = false;
         partAnalysis(nPair);
     }
 
@@ -71,6 +75,7 @@ public class TopologyExperiment {
     private void analysis(List<Tuple<Integer, Integer>> pairs) {
         int diameter = 0;
         int totalPath = 0;
+        double totalLatency = 0;
 
         for (Tuple<Integer, Integer> pair : pairs) {
             List<Integer> path = routingAlgorithm.path(pair.a, pair.b).path;
@@ -78,18 +83,26 @@ public class TopologyExperiment {
             diameter = Math.max(diameter, path.size() - 1);
             totalPath += path.size() - 1;
 
-//            double cableLength = graph.pathCableLength(packetTrace.trace);
+            double cableLength = graph.pathCableLength(path);
 //            totalCableLength += cableLength;
 //            maxCableLength = Math.max(maxCableLength, cableLength);
 
-//            double latency = cableLength * 5 + (packetTrace.trace.size() - 1) * 100;
-//            totalLatency += latency;
-//            maxLatency = Math.max(maxLatency, latency);
+            double latency = cableLength * 5 + (path.size() - 1) * 100;
+            totalLatency += latency;
 
         }
 
         this.diameter = diameter;
         this.arpl = 1.0 * totalPath / pairs.size();
+        this.totalLatency = totalLatency;
+        this.avgLatency = totalLatency / pairs.size();
+
+        if (this.isFull) {
+            if (this.routingAlgorithm instanceof CORRARoutingAlgorithm) {
+                StdOut.println("FOO");
+                StdOut.println( routingAlgorithm.getClass());
+            }
+        }
     }
 
     public int diameter() {
@@ -98,5 +111,17 @@ public class TopologyExperiment {
 
     public double averagePathLength() {
         return this.arpl;
+    }
+
+    public double getAvgLatency() {
+        return avgLatency;
+    }
+
+    public double getTotalLatency() {
+        return totalLatency;
+    }
+
+    public double getAvgRTS() {
+        return avgRTS;
     }
 }

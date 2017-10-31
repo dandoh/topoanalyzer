@@ -1,9 +1,9 @@
 package topo;
 
 import common.StdOut;
-import custom.neighbor.BigNBRRoutingAlgorithm;
-import custom.neighbor.NeighborGraph;
-import custom.neighbor.NeighborRoutingAlgorithm;
+import custom.corra.BigCORRARoutingAlgorithm;
+import custom.corra.CORRAGraph;
+import custom.corra.CORRARoutingAlgorithm;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -29,12 +29,12 @@ public class NBRExperimentTest {
             String fileEdge = prefix + ".edges";
             String fileGeo = prefix + ".geo";
             StdOut.printf("Loading network...");
-            NeighborGraph graph = new NeighborGraph(size, xSize, fileEdge, fileGeo, delta, k);
+            CORRAGraph graph = new CORRAGraph(size, xSize, fileEdge, fileGeo, delta, k);
             StdOut.printf("Done!\n");
 
             StdOut.printf("Build routing algorithm...");
-            NeighborRoutingAlgorithm ra1 = new NeighborRoutingAlgorithm(graph);
-            BigNBRRoutingAlgorithm ra2 = new BigNBRRoutingAlgorithm(graph);
+            CORRARoutingAlgorithm ra1 = new CORRARoutingAlgorithm(graph);
+            BigCORRARoutingAlgorithm ra2 = new BigCORRARoutingAlgorithm(graph);
             StdOut.printf("Done!\n");
 
             StdOut.printf("Calculating...");

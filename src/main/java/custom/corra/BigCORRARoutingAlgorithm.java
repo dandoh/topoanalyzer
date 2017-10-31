@@ -1,21 +1,16 @@
-package custom.neighbor;
-
-import common.StdOut;
-import common.Tuple;
-import routing.RoutingAlgorithm;
-import routing.RoutingPath;
+package custom.corra;
 
 import java.util.*;
 
-public class BigNBRRoutingAlgorithm extends NeighborRoutingAlgorithm {
+public class BigCORRARoutingAlgorithm extends CORRARoutingAlgorithm {
 
-    public BigNBRRoutingAlgorithm(NeighborGraph graph) {
+    public BigCORRARoutingAlgorithm(CORRAGraph graph) {
         super();
         this.graph = graph;
 
         tables = new HashMap<>();
         for (int u : graph.switches()) {
-            tables.put(u, new NeighborTable());
+            tables.put(u, new CORRATable());
         }
     }
 
@@ -28,8 +23,8 @@ public class BigNBRRoutingAlgorithm extends NeighborRoutingAlgorithm {
         }
         int desSwitch = graph.isHostVertex(destination) ? graph.adj(destination).get(0) : destination;
 
-        NeighborTable table = tables.get(current);
-        // Initial neighbor
+        CORRATable table = tables.get(current);
+        // Initial corra
         if (table.neighborTable.isEmpty()) {
             this.updateSelfTable(current);
         }

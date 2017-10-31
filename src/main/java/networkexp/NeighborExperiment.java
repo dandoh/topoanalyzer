@@ -2,11 +2,8 @@ package networkexp;
 
 import common.Knuth;
 import common.StdOut;
-import custom.neighbor.NeighborGraph;
-import custom.neighbor.NeighborRoutingAlgorithm;
-import custom.neighbor.NeighborTable;
-import custom.smallworld.SmallWorldGraph;
-import custom.smallworld.SmallWorldRoutingAlgorithm;
+import custom.corra.CORRAGraph;
+import custom.corra.CORRARoutingAlgorithm;
 import network.Network;
 import routing.RoutingAlgorithm;
 import routing.ShortestPathRoutingAlgorithm;
@@ -35,8 +32,8 @@ public class NeighborExperiment {
             String fileEdge = prefix + ".edges";
             String fileGeo = prefix + ".geo";
             StdOut.printf("Loading network\n");
-            NeighborGraph graph = new NeighborGraph(size, xSize, fileEdge, fileGeo, delta, k);
-            RoutingAlgorithm ra = new NeighborRoutingAlgorithm(graph);
+            CORRAGraph graph = new CORRAGraph(size, xSize, fileEdge, fileGeo, delta, k);
+            RoutingAlgorithm ra = new CORRARoutingAlgorithm(graph);
             Network network = new Network(graph, ra);
             StdOut.println("Contructing done!");
 

@@ -1,9 +1,8 @@
 package topo;
 
 import common.StdOut;
-import custom.neighbor.BigNBRRoutingAlgorithm;
-import custom.neighbor.NeighborGraph;
-import custom.neighbor.NeighborRoutingAlgorithm;
+import custom.corra.CORRAGraph;
+import custom.corra.CORRARoutingAlgorithm;
 
 public class NBRExperiment {
     public static void main(String[] args) {
@@ -27,21 +26,22 @@ public class NBRExperiment {
             String fileEdge = prefix + ".edges";
             String fileGeo = prefix + ".geo";
             StdOut.printf("Loading network...");
-            NeighborGraph graph = new NeighborGraph(size, xSize, fileEdge, fileGeo, delta, k);
+            CORRAGraph graph = new CORRAGraph(size, xSize, fileEdge, fileGeo, delta, k);
             StdOut.printf("Done!\n");
 
             StdOut.printf("Build routing algorithm...");
-            NeighborRoutingAlgorithm ra = new NeighborRoutingAlgorithm(graph);
-//            BigNBRRoutingAlgorithm ra = new BigNBRRoutingAlgorithm(graph);
+            CORRARoutingAlgorithm ra = new CORRARoutingAlgorithm(graph);
+//            BigCORRARoutingAlgorithm ra = new BigCORRARoutingAlgorithm(graph);
             StdOut.printf("Done!\n");
 
             StdOut.printf("Calculating...");
-            int nPair = 1000;
+            int nPair = 100;
             TopologyExperiment topo = new TopologyExperiment(graph, ra);
             StdOut.printf("Done!\n");
 
             StdOut.printf("Diameter: %d\n", topo.diameter());
             StdOut.printf("Average routing path length: %.3f\n", topo.averagePathLength());
+            StdOut.printf("Average latency: %.5f\n", topo.getTotalLatency());
         }
 
         totalTime = System.currentTimeMillis() - totalTime;
