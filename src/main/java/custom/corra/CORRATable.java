@@ -30,9 +30,17 @@ public class CORRATable {
         br2.put(destination, nextHop);
     }
 
-    public void addBrRoute(int destination, int nextHop, int hop) {
+    /*
+     * Add bridge to brTable
+     * @param
+     *      destination: Destination of this bridge
+     *      nextHop: Next node from current node
+     *      hop: Number of hop it takes to go to destination by this path
+     *      typeBr: type of bridge; 1 - br1, 2 - br2, 3 - STP
+     */
+    public void addBrRoute(int destination, int nextHop, int hop, int typeBr) {
         if (!brTable.containsKey(destination) || brTable.get(destination).get(1) > hop) {
-            brTable.put(destination, Arrays.asList(nextHop, hop));
+            brTable.put(destination, Arrays.asList(nextHop, hop, typeBr));
         }
     }
 

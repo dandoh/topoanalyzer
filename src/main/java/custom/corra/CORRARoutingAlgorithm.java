@@ -1,6 +1,7 @@
 package custom.corra;
 
 import common.StdOut;
+import common.Tuple;
 import routing.RoutingAlgorithm;
 import routing.RoutingPath;
 
@@ -13,6 +14,7 @@ public class CORRARoutingAlgorithm implements RoutingAlgorithm {
     public int nBr1 = 0;
     public int nBr2 = 0;
     public int nSTP = 0;
+    protected int type = 0;
 
     public CORRARoutingAlgorithm() {
     }
@@ -71,13 +73,13 @@ public class CORRARoutingAlgorithm implements RoutingAlgorithm {
         for (int w : graph.adj(u)) {
             if (graph.isSwitchVertex(w) && graph.isRandomLink(u, w)) {
                 table.addBr1(w, w);
-                table.addBrRoute(w, w, 1);
+                table.addBrRoute(w, w, 1, 1);
 
                 // Find br2
                 for (int k : graph.adj(w)) {
                     if (graph.isSwitchVertex(k) && k != u && graph.isRandomLink(w, k)) {
                         table.addBr2(k, w);
-                        table.addBrRoute(k, w, 2);
+                        table.addBrRoute(k, w, 2, 2);
                     }
                 }
             }
@@ -98,12 +100,12 @@ public class CORRARoutingAlgorithm implements RoutingAlgorithm {
 
             // Receive br1 from v
             for (Map.Entry<Integer, Integer> brEntry : vTable.br1.entrySet()) {
-                table.addBrRoute(brEntry.getKey(), info.get(0), info.get(1) + 1);
+                table.addBrRoute(brEntry.getKey(), info.get(0), info.get(1) + 1, 1);
             }
 
             // Receive br2 from v
             for (Map.Entry<Integer,Integer> brEntry : vTable.br2.entrySet()) {
-                table.addBrRoute(brEntry.getKey(), info.get(0), info.get(1) + 2);
+                table.addBrRoute(brEntry.getKey(), info.get(0), info.get(1) + 2, 2);
             }
         }
     }
@@ -123,7 +125,9 @@ public class CORRARoutingAlgorithm implements RoutingAlgorithm {
             return nextNeighbor;
         }
 
-        nextNeighbor = this.getNextBrNode(current, desSwitch);
+        Tuple<Integer, Integer> nextBr =  this.getNextBrNode(current, desSwitch);
+        nextNeighbor = nextBr.a;
+        if (this.type == 0) this.type = nextBr.b;
 
 //        StdOut.printf("%d %d %d %d\n", source, destination, current, nextNeighbor);
         return nextNeighbor;
@@ -133,6 +137,7 @@ public class CORRARoutingAlgorithm implements RoutingAlgorithm {
     public RoutingPath path(int source, int destination) {
         RoutingPath routingPath = new RoutingPath();
 
+        type = 0;
         int current = source;
         int count = 0;
         while (current != destination) {
@@ -156,23 +161,36 @@ public class CORRARoutingAlgorithm implements RoutingAlgorithm {
         routingPath.path.add(destination);
         updatePathByK(routingPath.path);
 
+        switch (type) {
+            case 1:
+                nBr1++;
+                break;
+            case 2:
+                nBr2++;
+                break;
+            case 3:
+                nSTP++;
+                break;
+        }
         return routingPath;
     }
 
-    protected int getNextBrNode(int sourceSwitch, int desSwitch) {
+    protected Tuple<Integer, Integer> getNextBrNode(int sourceSwitch, int desSwitch) {
         CORRATable table = tables.get(sourceSwitch);
         int nextHop = -1;
         int minHop = Integer.MAX_VALUE;
+        int type = 0;
         for (Map.Entry<Integer, List<Integer>> entry : table.brTable.entrySet()) {
             if (graph.isNeighbor(desSwitch, entry.getKey())) {
                 if (entry.getValue().get(1) < minHop) {
                     minHop = entry.getValue().get(1);
                     nextHop = entry.getValue().get(0);
+                    type = entry.getValue().get(2);
                 }
             }
         }
 
-        return nextHop;
+        return new Tuple<>(nextHop, type);
     }
 
     public void updatePathByK(List<Integer> path) {
@@ -225,7 +243,7 @@ public class CORRARoutingAlgorithm implements RoutingAlgorithm {
                 while (trace[u] != -1) {
                     u = trace[u];
                     path.add(0, u);
-                    tables.get(u).addBrRoute(destination, path.get(1), path.size() - 1);
+                    tables.get(u).addBrRoute(destination, path.get(1), path.size() - 1, 3);
                 }
 
                 return path.get(1);

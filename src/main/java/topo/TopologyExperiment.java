@@ -19,7 +19,6 @@ public class TopologyExperiment {
     private double arpl;
     private double totalLatency;
     private double avgLatency;
-    private double avgRTS;
 
     public TopologyExperiment(Graph graph, RoutingAlgorithm routingAlgorithm) {
         this.graph = graph;
@@ -96,13 +95,6 @@ public class TopologyExperiment {
         this.arpl = 1.0 * totalPath / pairs.size();
         this.totalLatency = totalLatency;
         this.avgLatency = totalLatency / pairs.size();
-
-        if (this.isFull) {
-            if (this.routingAlgorithm instanceof CORRARoutingAlgorithm) {
-                StdOut.println("FOO");
-                StdOut.println( routingAlgorithm.getClass());
-            }
-        }
     }
 
     public int diameter() {
@@ -121,7 +113,7 @@ public class TopologyExperiment {
         return totalLatency;
     }
 
-    public double getAvgRTS() {
-        return avgRTS;
+    public static double getAvgRTS(CORRARoutingAlgorithm ra) {
+        return ra.avgRTS();
     }
 }

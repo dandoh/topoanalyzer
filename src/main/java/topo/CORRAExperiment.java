@@ -1,10 +1,14 @@
 package topo;
 
 import common.StdOut;
+import custom.corra.BigCORRARoutingAlgorithm;
 import custom.corra.CORRAGraph;
 import custom.corra.CORRARoutingAlgorithm;
+import custom.corra.CORRATable;
 
-public class NBRExperiment {
+import java.util.List;
+
+public class CORRAExperiment {
     public static void main(String[] args) {
         long totalTime = System.currentTimeMillis();
 
@@ -30,18 +34,30 @@ public class NBRExperiment {
             StdOut.printf("Done!\n");
 
             StdOut.printf("Build routing algorithm...");
+            // Choose type of routing algorithm
             CORRARoutingAlgorithm ra = new CORRARoutingAlgorithm(graph);
 //            BigCORRARoutingAlgorithm ra = new BigCORRARoutingAlgorithm(graph);
+
             StdOut.printf("Done!\n");
 
-            StdOut.printf("Calculating...");
-            int nPair = 100;
+            StdOut.printf("Calculating...\n");
+
+            // Full pair analysis
             TopologyExperiment topo = new TopologyExperiment(graph, ra);
+
+//            Part analysis
+//            int nPair = 100;
+//            TopologyExperiment topo = new TopologyExperiment(graph, ra, nPair);
+
             StdOut.printf("Done!\n");
 
             StdOut.printf("Diameter: %d\n", topo.diameter());
             StdOut.printf("Average routing path length: %.3f\n", topo.averagePathLength());
             StdOut.printf("Average latency: %.5f\n", topo.getTotalLatency());
+            StdOut.printf("Average RTS: %.5f\n", TopologyExperiment.getAvgRTS(ra));
+            StdOut.printf("Path by Br1: %d\n", ra.nBr1);
+            StdOut.printf("Path by Br2: %d\n", ra.nBr2);
+            StdOut.printf("Path by STP: %d\n", ra.nSTP);
         }
 
         totalTime = System.currentTimeMillis() - totalTime;

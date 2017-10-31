@@ -1,5 +1,7 @@
 package custom.corra;
 
+import common.Tuple;
+
 import java.util.*;
 
 public class BigCORRARoutingAlgorithm extends CORRARoutingAlgorithm {
@@ -41,10 +43,12 @@ public class BigCORRARoutingAlgorithm extends CORRARoutingAlgorithm {
             table.isReceiveBr = true;
         }
 
-        nextNeighbor = this.getNextBrNode(current, desSwitch);
+        Tuple<Integer, Integer> nextBr =  this.getNextBrNode(current, desSwitch);
+        nextNeighbor = nextBr.a;
 
 //        StdOut.printf("%d %d %d\n", current, desSwitch, nextNeighbor);
         if (nextNeighbor > -1) {
+            if (this.type == 0) this.type = nextBr.b;
             return nextNeighbor;
         }
 
