@@ -71,7 +71,9 @@ public class CORRAKGraph extends CORRAGraph {
         time = System.currentTimeMillis() - time;
         StdOut.println(String.format("Runtime = %f\n", 1.0 * time / 1000));
 
-        String fileName = "random_" + graph.switches().size() + "_nodes_" + graph.getnCol() + "_xSize_r" + nAlpha;
+        String fileName = "random_" + graph.switches().size() + "_nodes_" +
+                            graph.getnCol() + "_xSize_r" + nAlpha +
+                            "_k" + k;
         graph.writeFileGeos(fileName + ".geos");
         graph.writeFileEdges(fileName + ".edges");
 
