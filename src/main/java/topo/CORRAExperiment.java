@@ -53,7 +53,7 @@ public class CORRAExperiment {
 
             StdOut.printf("Diameter: %d\n", topo.diameter());
             StdOut.printf("Average routing path length: %.3f\n", topo.averagePathLength());
-            StdOut.printf("Average latency: %.5f\n", topo.getTotalLatency());
+            StdOut.printf("Average latency: %.5f\n", topo.getAvgLatency());
             StdOut.printf("Average RTS: %.5f\n", TopologyExperiment.getAvgRTS(ra));
             StdOut.printf("Path by Br1: %d\n", ra.nBr1);
             StdOut.printf("Path by Br2: %d\n", ra.nBr2);
