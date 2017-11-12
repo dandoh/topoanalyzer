@@ -2,6 +2,9 @@ package custom.smallworld;
 
 import graph.Graph;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -184,6 +187,10 @@ public class GridGraph extends Graph {
         return Math.sqrt(Math.pow(ux - vx, 2) + Math.pow(uy - vy, 2));
     }
 
+    public int getnCol() {
+        return nCol;
+    }
+
     /**
      * Returns a string representation of this graph.
      *
@@ -219,4 +226,56 @@ public class GridGraph extends Graph {
 
         return totalLength;
     }
+
+    public void writeFileGeos(String fileName) {
+        try {
+            File file = new File(fileName);
+            // creates the file
+            file.createNewFile();
+
+            FileWriter writer = new FileWriter(file);
+
+            // Writes the content to the file
+            writer.write(this.switches().size() + "\n");
+            for (int i : this.switches()) {
+                writer.write(i + " " + i / nCol + " " + i % nCol + "\n");
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeFileEdges(String fileName) {
+        try {
+            File file = new File(fileName);
+            // creates the file
+            file.createNewFile();
+
+            FileWriter writer = new FileWriter(file);
+
+            int nEdge = 0;
+            for (int i : this.switches()) {
+                for (int j : this.adj(i)) {
+                    if (isSwitchVertex(j) && i < j)
+                        nEdge++;
+                }
+            }
+            // Writes the content to the file
+            writer.write(this.switches().size() + " " + nEdge + "\n");
+            for (int i : this.switches()) {
+                for (int j : this.adj(i)) {
+                    if (isSwitchVertex(j) && i < j)
+                        writer.write(i + " " + j + "\n");
+                }
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
