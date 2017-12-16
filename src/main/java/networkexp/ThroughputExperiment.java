@@ -74,6 +74,7 @@ public class ThroughputExperiment {
 
         long averageTime = sim.totalPacketTime / sim.numSent;
         StdOut.printf("For f = %d, average packet time = %.2fms\n", frequency, averageTime / 1e6);
+        StdOut.printf("Loss percentage = %.2f\n", 1.0 * sim.numLoss / sim.numSent * 100);
         return averageTime;
     }
 

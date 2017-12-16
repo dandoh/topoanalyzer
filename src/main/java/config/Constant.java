@@ -21,6 +21,8 @@ public class Constant {
     // Packet size ~ 1Mb
     public static final int PACKET_SIZE = (int) 1e6; // 1Mb
 
+    public static final int SWITCH_BUFFER_SIZE = (int) 1e6; // 10Mb
+
     // Maximum time system
     public static final int MAX_TIME = (int) 1e9;
 

@@ -13,6 +13,7 @@ public class DiscreteEventSimulator {
     private int timeLimit;
     public int numReceived = 0;
     public int numSent = 0;
+    public int numLoss = 0;
     public long totalPacketTime = 0;
     public int numEvent = 0;
     private boolean isLimit;
@@ -56,5 +57,11 @@ public class DiscreteEventSimulator {
 
     public boolean isVerbose() {
         return verbose;
+    }
+
+    public void log(String message) {
+        if (this.verbose) {
+            StdOut.printf("At %d: %s\n", this.getTime(), message);
+        }
     }
 }

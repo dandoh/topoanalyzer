@@ -10,7 +10,7 @@ import routing.ShortestPathRoutingAlgorithm;
 
 import java.util.*;
 
-public class NeighborExperiment {
+public class CORRAExperiment {
     public static void main(String[] args) {
         long time = System.currentTimeMillis();
 
@@ -18,8 +18,8 @@ public class NeighborExperiment {
         int k = 0;
         int nTest = 1;
 
-        int size = 1024;
-        int xSize = 32;
+        int size = 4096;
+        int xSize = 64;
 
         String type = "rsn";
 
