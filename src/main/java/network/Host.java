@@ -1,9 +1,8 @@
 package network;
 
-import common.StdOut;
 import config.Constant;
-import networkexp.DiscreteEventSimulator;
-import networkexp.Event;
+import simulatedexperiment.DiscreteEventSimulator;
+import simulatedexperiment.Event;
 
 /**
  * Created by Dandoh on 6/27/17.

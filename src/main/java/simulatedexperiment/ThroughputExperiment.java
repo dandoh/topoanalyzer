@@ -1,12 +1,10 @@
-package networkexp;
+package simulatedexperiment;
 
 import common.Knuth;
 import common.StdOut;
 import config.Constant;
 import custom.fattree.FatTreeGraph;
 import custom.fattree.FatTreeRoutingAlgorithm;
-import custom.full.FullGraph;
-import custom.full.FullRoutingAlgorithm;
 import network.Network;
 import network.Packet;
 import routing.RoutingAlgorithm;

@@ -1,9 +1,7 @@
-package topo;
+package nonsimulatedexperiment;
 
 import common.StdOut;
 import custom.smallworld.SmallWorldGraph;
-import custom.smallworld.SmallWorldRoutingAlgorithm;
-import network.Network;
 import routing.RoutingAlgorithm;
 import routing.ShortestPathRoutingAlgorithm;
 

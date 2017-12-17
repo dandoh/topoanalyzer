@@ -1,4 +1,4 @@
-package networkexp;
+package simulatedexperiment;
 
 /**
  * Created by Dandoh on 6/27/17.

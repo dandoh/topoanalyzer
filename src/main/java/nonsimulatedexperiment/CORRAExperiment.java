@@ -1,12 +1,8 @@
-package topo;
+package nonsimulatedexperiment;
 
 import common.StdOut;
-import custom.corra.BigCORRARoutingAlgorithm;
 import custom.corra.CORRAGraph;
 import custom.corra.CORRARoutingAlgorithm;
-import custom.corra.CORRATable;
-
-import java.util.List;
 
 public class CORRAExperiment {
     public static void main(String[] args) {
@@ -21,7 +17,7 @@ public class CORRAExperiment {
 
         String type = "rsn";
 
-        StdOut.printf("Experiment topo with %d nodes, delta = %d\n", size, delta);
+        StdOut.printf("Experiment nonsimulatedexperiment with %d nodes, delta = %d\n", size, delta);
 
         for (int i = 0; i < nTest; i++) {
             StdOut.printf("Test %d\n", i + 1);
@@ -47,7 +43,7 @@ public class CORRAExperiment {
 
 //            Part analysis
 //            int nPair = 100;
-//            TopologyExperiment topo = new TopologyExperiment(graph, ra, nPair);
+//            TopologyExperiment nonsimulatedexperiment = new TopologyExperiment(graph, ra, nPair);
 
             StdOut.printf("Done!\n");
 

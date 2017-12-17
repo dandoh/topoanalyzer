@@ -1,6 +1,6 @@
 package network;
 
-import networkexp.DiscreteEventSimulator;
+import simulatedexperiment.DiscreteEventSimulator;
 
 /**
  * Created by Dandoh on 6/27/17.

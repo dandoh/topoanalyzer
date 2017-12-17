@@ -3,8 +3,8 @@ package network;
 import common.StdOut;
 import common.Tuple;
 import config.Constant;
-import networkexp.DiscreteEventSimulator;
-import networkexp.Event;
+import simulatedexperiment.DiscreteEventSimulator;
+import simulatedexperiment.Event;
 import routing.RoutingAlgorithm;
 
 import java.util.*;

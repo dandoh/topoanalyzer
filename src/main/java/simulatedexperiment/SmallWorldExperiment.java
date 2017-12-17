@@ -1,4 +1,4 @@
-package networkexp;
+package simulatedexperiment;
 
 import common.Knuth;
 import common.StdOut;

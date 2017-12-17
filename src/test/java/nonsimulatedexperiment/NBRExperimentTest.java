@@ -1,4 +1,4 @@
-package topo;
+package nonsimulatedexperiment;
 
 import common.StdOut;
 import custom.corra.BigCORRARoutingAlgorithm;
@@ -20,7 +20,7 @@ public class NBRExperimentTest {
 
         String type = "rsn";
 
-        StdOut.printf("Experiment topo with %d nodes, delta = %d\n", size, delta);
+        StdOut.printf("Experiment nonsimulatedexperiment with %d nodes, delta = %d\n", size, delta);
 
         for (int i = 0; i < nTest; i++) {
             StdOut.printf("Test %d\n", i + 1);
