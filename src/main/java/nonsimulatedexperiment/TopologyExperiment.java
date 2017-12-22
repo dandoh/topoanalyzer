@@ -1,5 +1,6 @@
 package nonsimulatedexperiment;
 
+import common.StdOut;
 import common.Tuple;
 import custom.corra.CORRARoutingAlgorithm;
 import graph.Graph;
@@ -76,7 +77,9 @@ public class TopologyExperiment {
         double totalLatency = 0;
 
         for (Tuple<Integer, Integer> pair : pairs) {
+//            StdOut.printf("%d %d\n", pair.a, pair.b);
             List<Integer> path = routingAlgorithm.path(pair.a, pair.b).path;
+//            StdOut.println(path);
 
             diameter = Math.max(diameter, path.size() - 1);
             totalPath += path.size() - 1;
