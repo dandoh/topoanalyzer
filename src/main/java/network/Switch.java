@@ -41,7 +41,7 @@ public class Switch extends Node {
         if (currentBufferSize() + p.getSize() > bufferSize) {
             sim.numLoss++;
             sim.log(String.format("Switch #%d drop a packet", id));
-            StdOut.printf("At %d: Switch #%d drop a packet\n", sim.getTime(), id);
+//            StdOut.printf("At %d: Switch #%d drop a packet\n", sim.getTime(), id);
 //            StdOut.println(String.format("Switch #%d drop a packet %d", id, buffer.size()));
             return;
         }

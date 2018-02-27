@@ -15,15 +15,15 @@ public class CORRAExperiment {
         long time = System.currentTimeMillis();
 
         int delta = 5;
-        int k = 0;
+        int k = 1;
         int nTest = 1;
 
-        int size = 4096;
-        int xSize = 64;
+        int size = 1024;
+        int xSize = 32;
 
         String type = "rsn";
 
-        StdOut.printf("Experiment nonsimulatedexperiment with %d nodes, delta = %d\n", size, delta);
+        StdOut.printf("Experiment topo with %d nodes, delta = %d\n", size, delta);
 
         for (int i = 0; i < nTest; i++) {
             StdOut.printf("Test %d\n", i + 1);
