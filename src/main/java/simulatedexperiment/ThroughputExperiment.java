@@ -5,6 +5,7 @@ import common.StdOut;
 import config.Constant;
 import custom.fattree.FatTreeGraph;
 import custom.fattree.FatTreeRoutingAlgorithm;
+import network.Host;
 import network.Network;
 import network.Packet;
 import routing.RoutingAlgorithm;
@@ -23,30 +24,32 @@ public class ThroughputExperiment {
     }
 
     public long minAveragePacketTime(Map<Integer, Integer> trafficPattern, boolean verbose) {
-        DiscreteEventSimulator sim = new DiscreteEventSimulator(false, Constant.MAX_TIME, verbose);
+        DiscreteEventSimulator simulator = new DiscreteEventSimulator(false, Constant.MAX_TIME, verbose);
         network.clear();
 
         for (Integer source : trafficPattern.keySet()) {
             Integer destination = trafficPattern.get(source);
 
-            final Packet packet = new Packet(source, destination, sim.getTime());
+            final Packet packet = new Packet(source, destination, simulator.getTime());
 
-            sim.addEvent(new Event(sim.getTime(), ++sim.numEvent) {
+            simulator.getEventList().add(new Event(simulator, simulator.getTime()) {
                 @Override
-                public void execute() {
-                        network.getHostById(source).process(packet, sim);
-                    }
+                public void actions() {
+                    network.getHostById(source).process(packet, simulator);
+                }
             });
 
-            sim.process();
+            simulator.start();
         }
 
-        long averageTime = sim.totalPacketTime / sim.numSent;
+        long averageTime = simulator.totalPacketTime / simulator.numSent;
+        StdOut.printf("Loss percentage = %.2f\n", 1.0 * simulator.numLoss / simulator.numSent * 100);
+        StdOut.printf("Average packet time = %.2fms\n", averageTime / 1e6);
         return averageTime;
     }
 
     public long measureThroughput(Map<Integer, Integer> trafficPattern, long frequency, boolean verbose) {
-        DiscreteEventSimulator sim = new DiscreteEventSimulator(false, Constant.MAX_TIME, verbose);
+        DiscreteEventSimulator simulator = new DiscreteEventSimulator(false, Constant.MAX_TIME, verbose);
         network.clear(); // clear all the data, queue, ... in switches, hosts
 
         long timeInterval = Constant.MAX_TIME / frequency;
@@ -57,31 +60,31 @@ public class ThroughputExperiment {
                 long time = i * timeInterval;
                 final Packet packet = new Packet(source, destination, time);
 
-                sim.addEvent(new Event(time, ++sim.numEvent) {
+                simulator.getEventList().add(new Event(simulator, time) {
                     @Override
-                    public void execute() {
-                        network.getHostById(source).process(packet, sim);
+                    public void actions() {
+                        network.getHostById(source).process(packet, simulator);
                     }
                 });
             }
         }
 
-        sim.process();
+        simulator.start();
 //        System.out.println("Num packets sent: " + sim.numSent);
 //        System.out.println("Num packets received: " + sim.numReceived);
 
-        long averageTime = sim.totalPacketTime / sim.numSent;
+        long averageTime = simulator.totalPacketTime / simulator.numSent;
         StdOut.printf("For f = %d, average packet time = %.2fms\n", frequency, averageTime / 1e6);
-        StdOut.printf("Loss percentage = %.2f\n", 1.0 * sim.numLoss / sim.numSent * 100);
+        StdOut.printf("Loss percentage = %.2f\n", 1.0 * simulator.numLoss / simulator.numSent * 100);
         return averageTime;
     }
 
     public long evaluateThroughput(Map<Integer, Integer> trafficPattern, double threshold, boolean verbose)  {
-//        StdOut.println(measureThroughput(trafficPattern, 1, false));
+//        StdOut.println(measureThroughput(trafficPattern, false));
         long minTime = minAveragePacketTime(trafficPattern, verbose);
         StdOut.printf("Minimum average time = %.2fms\n\n", minTime / 1e6);
 
-        int maxF = Constant.MAX_TIME / Constant.PACKET_INTERVAL;
+        int maxF = 1000; //Constant.MAX_TIME / Constant.PACKET_INTERVAL;
 
         int first = 0;
         int last = maxF;
@@ -131,6 +134,7 @@ public class ThroughputExperiment {
         double threshold = 1.1;
         StdOut.printf("Thresh hold = %.2f\n", threshold);
         long throughput = experiment.evaluateThroughput(traffic, threshold, false);
+//        long throughput = experiment.minAveragePacketTime(traffic, true);
 //        StdOut.printf("Maximum frequency = %d\n", maxFrequency);
         StdOut.printf("\nThrough put of network %dGb/s\n", throughput / 1000000);
     }

@@ -17,29 +17,41 @@ public class Host extends Node {
     }
 
     @Override
-    public void process(Packet p, DiscreteEventSimulator sim) {
-        long currentSimTime = sim.getTime();
+    public void process(Packet p, DiscreteEventSimulator simulator) {
+        double currentSimTime = simulator.getTime();
 
         if (id == p.getDestination()) {
             // TODO - save information
-            if (sim.isVerbose()) {
-                System.out.println(String.format("Host #%d received packet at %d", id, sim.getTime()));
-            }
-            sim.numReceived++;
+            simulator.log(String.format("Host #%d received packet", id));
+            simulator.numReceived++;
             p.setEndTime(currentSimTime);
-            sim.totalPacketTime += p.timeTravel();
+            simulator.totalPacketTime += p.timeTravel();
             return;
         }
 
-        sim.numSent++;
-        if (sim.isVerbose()) {
-            System.out.println(String.format("Host #%d sending packet at %d", id, sim.getTime()));
-        }
+        simulator.numSent++;
+        simulator.log(String.format("Host #%d sending a packet to Host #%d",
+                id, p.getDestination()));
 
-        sim.addEvent(new Event(currentSimTime + Constant.HOST_DELAY, ++sim.numEvent) {
+        Host thisHost = this;
+
+        double timeSent = currentSimTime + Constant.HOST_DELAY;
+        simulator.getEventList().add(new Event(simulator, timeSent) {
             @Override
-            public void execute() {
-                link.handle(p, Host.this, sim);
+            public void actions() {
+                link.handle(p, thisHost, simulator);
+            }
+        });
+
+        double timeCheck = timeSent + Constant.DEFAULT_TIME_OUT;
+        simulator.getEventList().add(new Event(simulator, timeCheck) {
+            @Override
+            public void actions() {
+                if (!p.isTransmitted()) {
+                    simulator.log(String.format("Host #%d resending packet to Host #%d",
+                            thisHost.id, p.getDestination()));
+                    thisHost.process(p, simulator);
+                }
             }
         });
     }

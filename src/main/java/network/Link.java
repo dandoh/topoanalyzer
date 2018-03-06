@@ -14,7 +14,7 @@ public class Link {
     private long bandwidth;
     private long length;
 
-    private long nextAvailableTime = 0;
+    private double nextAvailableTime = 0;
 
     public Link(Node u, Node v) {
         this.u = u;
@@ -30,37 +30,28 @@ public class Link {
         return (long) (length / Constant.PROPAGATION_VELOCITY);
     }
 
-    public void handle(Packet packet, Node input, DiscreteEventSimulator sim) {
+    public void handle(Packet packet, Node input, DiscreteEventSimulator simulator) {
         // move packet from input endpoint to output endpoint
         Node output = input == u ? v : u;
-        long currentTime = sim.getTime();
+        double currentTime = simulator.time();
         if (currentTime >= nextAvailableTime) {
-            if (sim.isVerbose()) {
-                System.out.println(
-                        String.format("Transferring from %d to %d at %d", input.id, output.id, sim.getTime()));
-            }
+            simulator.log(String.format("Transferring from %d to %d", input.id, output.id));
             long latency = serialLatency(packet.getSize()) + propagationLatency();
 
             nextAvailableTime = currentTime + latency;
-            sim.addEvent(new Event(currentTime + latency, ++sim.numEvent) {
+            simulator.getEventList().add(new Event(simulator, currentTime + latency) {
                 @Override
-                public void execute() {
-                    if (sim.isVerbose()) {
-                        System.out.println(
-                                String.format("Completed transferring from %d to %d at %d", input.id, output.id, sim.getTime()));
-                    }
-                    output.process(packet, sim);
+                public void actions() {
+                    simulator.log(String.format("Completed transferring from %d to %d", input.id, output.id));
+                    output.process(packet, simulator);
                 }
             });
         } else {
-            if (sim.isVerbose()) {
-                System.out.println(
-                        String.format("Transfer from %d to %d delayed at %d", input.id, output.id, sim.getTime()));
-            }
-            sim.addEvent(new Event(nextAvailableTime, ++sim.numEvent) {
+            simulator.log(String.format("Transfer from %d to %d delayed", input.id, output.id));
+            simulator.getEventList().add(new Event(simulator, nextAvailableTime) {
                 @Override
-                public void execute() {
-                    Link.this.handle(packet, input, sim);
+                public void actions() {
+                    Link.this.handle(packet, input, simulator);
                 }
             });
         }

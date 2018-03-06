@@ -1,15 +1,15 @@
 package simulatedexperiment;
 
 import common.StdOut;
+import umontreal.ssj.simevents.Simulator;
 
 import java.util.PriorityQueue;
 
 /**
  * Created by Dandoh on 6/27/17.
  */
-public class DiscreteEventSimulator {
+public class DiscreteEventSimulator extends Simulator {
     private long stime = 0; // system time
-    private PriorityQueue<Event> pq;
     private int timeLimit;
     public int numReceived = 0;
     public int numSent = 0;
@@ -19,40 +19,18 @@ public class DiscreteEventSimulator {
     private boolean isLimit;
     private boolean verbose;
 
-    public DiscreteEventSimulator(int timeLimit) {
-        this.timeLimit = timeLimit;
-        this.isLimit = true;
-        pq = new PriorityQueue<>((e1, e2) -> {
-            if (e1.time < e2.time) return -1;
-            else if (e1.time > e2.time) return 1;
-            else if (e1.id < e2.id) return -1;
-            else return 1;
-        });
+    public DiscreteEventSimulator() {
+        super();
     }
 
     public DiscreteEventSimulator(boolean isLimit, int timeLimit, boolean verbose) {
-        this(timeLimit);
+        super();
         this.isLimit = isLimit;
         this.verbose = verbose;
     }
 
-    public void process() {
-        while (!pq.isEmpty()) {
-            if (isLimit) {
-                if (stime < timeLimit) break;
-            }
-            Event top = pq.poll();
-            stime = top.time;
-            top.execute();
-        }
-    }
-
-    public void addEvent(Event event) {
-        pq.add(event);
-    }
-
-    public long getTime() {
-        return stime;
+    public double getTime() {
+        return currentTime;
     }
 
     public boolean isVerbose() {
@@ -61,7 +39,7 @@ public class DiscreteEventSimulator {
 
     public void log(String message) {
         if (this.verbose) {
-            StdOut.printf("At %d: %s\n", this.getTime(), message);
+            StdOut.printf("At %d: %s\n", (long) this.getTime(), message);
         }
     }
 }

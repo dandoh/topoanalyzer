@@ -19,7 +19,7 @@ public class Constant {
     public static final int HOST_DELAY = SWITCH_DELAY;
 
     // Packet size ~ 1Mb
-    public static final int PACKET_SIZE = (int) 1e6; // 1Mb
+    public static final int PACKET_SIZE = (int) 1e5; // 1Mb
 
     public static final int SWITCH_BUFFER_SIZE = (int) 1e6; // 10Mb
 
@@ -27,4 +27,6 @@ public class Constant {
     public static final int MAX_TIME = (int) 1e9;
 
     public static final int PACKET_INTERVAL = PACKET_SIZE;
+
+    public static final double DEFAULT_TIME_OUT = 2e7;
 }

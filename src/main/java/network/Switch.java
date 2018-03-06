@@ -20,7 +20,7 @@ public class Switch extends Node {
     public Map<Integer, Link> links = new HashMap<>();
 
     // Buffer of switch
-    public List<Tuple<Packet, Long>> buffer;
+    public List<Tuple<Packet, Double>> buffer;
     public long bufferSize;
 
     public Switch(int id, RoutingAlgorithm ra) {
@@ -32,15 +32,15 @@ public class Switch extends Node {
     }
 
     @Override
-    public void process(Packet p, DiscreteEventSimulator sim) {
-        long currentTime = sim.getTime();
+    public void process(Packet p, DiscreteEventSimulator simulator) {
+        double currentTime = simulator.time();
         this.checkBuffer(currentTime);
 
-        sim.log(String.format("Switch #%d processing a packet", id));
+        simulator.log(String.format("Switch #%d processing a packet", id));
 
         if (currentBufferSize() + p.getSize() > bufferSize) {
-            sim.numLoss++;
-            sim.log(String.format("Switch #%d drop a packet", id));
+            simulator.numLoss++;
+            simulator.log(String.format("Switch #%d drop a packet", id));
 //            StdOut.printf("At %d: Switch #%d drop a packet\n", sim.getTime(), id);
 //            StdOut.println(String.format("Switch #%d drop a packet %d", id, buffer.size()));
             return;
@@ -49,19 +49,19 @@ public class Switch extends Node {
         int nextId = ra.next(p.getSource(), id, p.getDestination());
 //        StdOut.printf("%d %d\n", id, nextId);
 
-        long executeTime;
+        double executeTime;
         if (buffer.isEmpty()) {
             executeTime = currentTime + Constant.SWITCH_DELAY;
         } else {
             executeTime = maxPacketTime() + Constant.SWITCH_DELAY;
         }
 
-        buffer.add(new Tuple<Packet, Long>(p, executeTime));
+        buffer.add(new Tuple<Packet, Double>(p, executeTime));
 
-        sim.addEvent(new Event(executeTime, ++sim.numEvent) {
+        simulator.getEventList().add(new Event(simulator, executeTime) {
             @Override
-            public void execute() {
-                links.get(nextId).handle(p, Switch.this, sim);
+            public void actions() {
+                links.get(nextId).handle(p, Switch.this, simulator);
             }
         });
     }
@@ -75,10 +75,10 @@ public class Switch extends Node {
         this.buffer = new ArrayList<>();
     }
 
-    private void checkBuffer(long currentTime) {
+    private void checkBuffer(double currentTime) {
 
 //        StdOut.printf("Before %d : %d\n", currentTime, buffer.size());
-        this.buffer.removeIf((Tuple<Packet, Long> t) -> t.b < currentTime);
+        this.buffer.removeIf((Tuple<Packet, Double> t) -> t.b < currentTime);
 //        for (Iterator<Tuple<Packet, Long>> iter = buffer.listIterator(); iter.hasNext();) {
 //            Tuple<Packet, Long> tuple = iter.next();
 //
@@ -96,17 +96,17 @@ public class Switch extends Node {
 //        }
     }
 
-    private long maxPacketTime() {
-        long maxTime = 0;
-        for (Tuple<Packet, Long> t : buffer) {
+    private double maxPacketTime() {
+        double maxTime = 0;
+        for (Tuple<Packet, Double> t : buffer) {
             maxTime = Math.max(t.b, maxTime);
         }
         return  maxTime;
     }
 
-    private long currentBufferSize() {
-        long size = 0;
-        for (Tuple<Packet, Long> t : buffer) {
+    private double currentBufferSize() {
+        double size = 0;
+        for (Tuple<Packet, Double> t : buffer) {
             size += t.a.getSize();
         }
 

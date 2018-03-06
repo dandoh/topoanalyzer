@@ -25,4 +25,5 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'org.apache.commons:commons-lang3:3.5'
+    compile 'ca.umontreal.iro.simul:ssj:+'
 }
