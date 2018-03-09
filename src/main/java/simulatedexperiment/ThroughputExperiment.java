@@ -127,15 +127,15 @@ public class ThroughputExperiment {
         for (int i = 0; i < sources.size(); i++) {
             traffic.put(sources.get(i), destination.get(i));
         }
-//        traffic.put(2, 17);
-//        traffic.put(3, 17);
 
 //        StdOut.println(G.hosts().size());
         double threshold = 1.1;
         StdOut.printf("Thresh hold = %.2f\n", threshold);
-        long throughput = experiment.evaluateThroughput(traffic, threshold, false);
+//        long throughput = experiment.evaluateThroughput(traffic, threshold, false);
 //        long throughput = experiment.minAveragePacketTime(traffic, true);
+        StdOut.println(experiment.measureThroughput(traffic, 1, true));
+
 //        StdOut.printf("Maximum frequency = %d\n", maxFrequency);
-        StdOut.printf("\nThrough put of network %dGb/s\n", throughput / 1000000);
+//        StdOut.printf("\nThrough put of network %dGb/s\n", throughput / 1000000);
     }
 }

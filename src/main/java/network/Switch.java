@@ -32,16 +32,15 @@ public class Switch extends Node {
     }
 
     @Override
-    public void process(Packet p, DiscreteEventSimulator simulator) {
-        double currentTime = simulator.time();
+    public void process(Packet p, DiscreteEventSimulator sim) {
+        double currentTime = sim.time();
         this.checkBuffer(currentTime);
 
-        simulator.log(String.format("Switch #%d processing a packet", id));
+        sim.log(String.format("Switch #%d processing a packet", id));
 
         if (currentBufferSize() + p.getSize() > bufferSize) {
-            simulator.numLoss++;
-            simulator.log(String.format("Switch #%d drop a packet", id));
-//            StdOut.printf("At %d: Switch #%d drop a packet\n", sim.getTime(), id);
+            sim.numLoss++;
+            sim.log(String.format("Switch #%d drop a packet", id));
 //            StdOut.println(String.format("Switch #%d drop a packet %d", id, buffer.size()));
             return;
         }
@@ -58,10 +57,10 @@ public class Switch extends Node {
 
         buffer.add(new Tuple<Packet, Double>(p, executeTime));
 
-        simulator.getEventList().add(new Event(simulator, executeTime) {
+        sim.getEventList().add(new Event(sim, executeTime) {
             @Override
             public void actions() {
-                links.get(nextId).handle(p, Switch.this, simulator);
+                links.get(nextId).handle(p, Switch.this, sim);
             }
         });
     }

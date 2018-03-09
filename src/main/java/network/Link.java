@@ -30,28 +30,28 @@ public class Link {
         return (long) (length / Constant.PROPAGATION_VELOCITY);
     }
 
-    public void handle(Packet packet, Node input, DiscreteEventSimulator simulator) {
+    public void handle(Packet packet, Node input, DiscreteEventSimulator sim) {
         // move packet from input endpoint to output endpoint
         Node output = input == u ? v : u;
-        double currentTime = simulator.time();
+        double currentTime = sim.time();
         if (currentTime >= nextAvailableTime) {
-            simulator.log(String.format("Transferring from %d to %d", input.id, output.id));
+            sim.log(String.format("Transferring from %d to %d", input.id, output.id));
             long latency = serialLatency(packet.getSize()) + propagationLatency();
 
             nextAvailableTime = currentTime + latency;
-            simulator.getEventList().add(new Event(simulator, currentTime + latency) {
+            sim.getEventList().add(new Event(sim, currentTime + latency) {
                 @Override
                 public void actions() {
-                    simulator.log(String.format("Completed transferring from %d to %d", input.id, output.id));
-                    output.process(packet, simulator);
+                    sim.log(String.format("Completed transferring from %d to %d", input.id, output.id));
+                    output.process(packet, sim);
                 }
             });
         } else {
-            simulator.log(String.format("Transfer from %d to %d delayed", input.id, output.id));
-            simulator.getEventList().add(new Event(simulator, nextAvailableTime) {
+            sim.log(String.format("Transfer from %d to %d delayed", input.id, output.id));
+            sim.getEventList().add(new Event(sim, nextAvailableTime) {
                 @Override
                 public void actions() {
-                    Link.this.handle(packet, input, simulator);
+                    Link.this.handle(packet, input, sim);
                 }
             });
         }
