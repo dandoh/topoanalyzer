@@ -35,7 +35,7 @@ public class ThroughputExperiment {
             simulator.getEventList().add(new Event(simulator, simulator.getTime()) {
                 @Override
                 public void actions() {
-                    network.getHostById(source).process(packet, simulator);
+                    network.getHostById(source).receive(packet, null, simulator);
                 }
             });
 
@@ -63,7 +63,7 @@ public class ThroughputExperiment {
                 simulator.getEventList().add(new Event(simulator, time) {
                     @Override
                     public void actions() {
-                        network.getHostById(source).process(packet, simulator);
+                        network.getHostById(source).receive(packet, null, simulator);
                     }
                 });
             }

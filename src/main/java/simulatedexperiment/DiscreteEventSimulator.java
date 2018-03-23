@@ -33,6 +33,10 @@ public class DiscreteEventSimulator extends Simulator {
         return currentTime;
     }
 
+    public void addEvent(Event e) {
+        this.getEventList().add(e);
+    }
+
     public boolean isVerbose() {
         return verbose;
     }

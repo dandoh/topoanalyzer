@@ -1,5 +1,6 @@
 package network;
 
+import common.Queue;
 import common.StdOut;
 import common.Tuple;
 import config.Constant;
@@ -19,50 +20,64 @@ public class Switch extends Node {
     // map from index to link
     public Map<Integer, Link> links = new HashMap<>();
 
-    // Buffer of switch
-    public List<Tuple<Packet, Double>> buffer;
-    public long bufferSize;
-
     public Switch(int id, RoutingAlgorithm ra) {
         super(id);
         this.ra = ra;
 
-        this.bufferSize = Constant.SWITCH_BUFFER_SIZE;
-        this.buffer = new ArrayList<>();
+        this.maxBufferSize= Constant.SWITCH_BUFFER_SIZE;
     }
 
     @Override
-    public void process(Packet p, DiscreteEventSimulator sim) {
+    public void receive(Packet p, NetworkObject source, DiscreteEventSimulator sim) {
+        this.addToBuffer(p);
+        if (this.buffer.size() == 1) {
+            this.process(sim);
+        }
+    }
+
+    @Override
+    public void process(DiscreteEventSimulator sim) {
+        Switch self = this;
+        Packet p = buffer.peek();
         double currentTime = sim.time();
-        this.checkBuffer(currentTime);
 
         sim.log(String.format("Switch #%d processing a packet", id));
-
-        if (currentBufferSize() + p.getSize() > bufferSize) {
-            sim.numLoss++;
-            sim.log(String.format("Switch #%d drop a packet", id));
-//            StdOut.println(String.format("Switch #%d drop a packet %d", id, buffer.size()));
-            return;
-        }
 
         int nextId = ra.next(p.getSource(), id, p.getDestination());
 //        StdOut.printf("%d %d\n", id, nextId);
 
-        double executeTime;
-        if (buffer.isEmpty()) {
-            executeTime = currentTime + Constant.SWITCH_DELAY;
-        } else {
-            executeTime = maxPacketTime() + Constant.SWITCH_DELAY;
-        }
+        double executeTime = currentTime + Constant.SWITCH_DELAY;
 
-        buffer.add(new Tuple<Packet, Double>(p, executeTime));
-
-        sim.getEventList().add(new Event(sim, executeTime) {
+        sim.addEvent(new Event(sim, executeTime) {
             @Override
             public void actions() {
-                links.get(nextId).handle(p, Switch.this, sim);
+                self.send(links.get(nextId), sim);
             }
         });
+    }
+
+    @Override
+    public void send(NetworkObject link, DiscreteEventSimulator sim) {
+        Switch self = this;
+        double currentTime = sim.time();
+        Packet p = dequeueBuffer();
+
+        if (link.canReceive(p, currentTime)) {
+            link.receive(p, this, sim);
+        } else {
+            addToBuffer(p);
+        }
+
+        // Schedule for the next packet in buffer
+        if (!buffer.isEmpty()) {
+            double nextWakeUpTime = currentTime + 1;
+            sim.addEvent(new Event(sim, nextWakeUpTime) {
+                @Override
+                public void actions() {
+                    self.process(sim);
+                }
+            });
+        }
     }
 
     @Override
@@ -71,44 +86,6 @@ public class Switch extends Node {
             link.getValue().clear();
         }
 
-        this.buffer = new ArrayList<>();
-    }
-
-    private void checkBuffer(double currentTime) {
-
-//        StdOut.printf("Before %d : %d\n", currentTime, buffer.size());
-        this.buffer.removeIf((Tuple<Packet, Double> t) -> t.b < currentTime);
-//        for (Iterator<Tuple<Packet, Long>> iter = buffer.listIterator(); iter.hasNext();) {
-//            Tuple<Packet, Long> tuple = iter.next();
-//
-//            if (tuple.b < currentTime) {
-//                iter.remove();
-//            }
-//        }
-//        StdOut.printf("After %d\n", buffer.size());
-//        if (this.id == 555) {
-//            StdOut.printf("At %d\n", currentTime);
-//            StdOut.println(this.buffer.size());
-//            for (Tuple<Packet, Long> t : buffer) {
-//                StdOut.println(t.b);
-//            }
-//        }
-    }
-
-    private double maxPacketTime() {
-        double maxTime = 0;
-        for (Tuple<Packet, Double> t : buffer) {
-            maxTime = Math.max(t.b, maxTime);
-        }
-        return  maxTime;
-    }
-
-    private double currentBufferSize() {
-        double size = 0;
-        for (Tuple<Packet, Double> t : buffer) {
-            size += t.a.getSize();
-        }
-
-        return size;
+        this.buffer = new Queue<>();
     }
 }

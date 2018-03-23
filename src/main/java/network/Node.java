@@ -5,14 +5,19 @@ import simulatedexperiment.DiscreteEventSimulator;
 /**
  * Created by Dandoh on 6/27/17.
  */
-public abstract class Node {
-    public int id;
-
+public abstract class Node extends NetworkObject {
     public Node(int id) {
-        this.id = id;
+        super(id);
     }
 
-    public abstract void process(Packet p, DiscreteEventSimulator sim);
+    @Override
+    public boolean canReceive(Packet p, double time) {
+        return currentBufferSize + p.getSize() <= maxBufferSize;
+    }
 
-    public abstract void clear();
+    @Override
+    public double getNextAvailableTime() {
+        // TODO
+        return -1;
+    }
 }
