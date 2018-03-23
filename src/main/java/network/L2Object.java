@@ -8,7 +8,7 @@ import simulatedexperiment.Event;
 /**
  * Created by Dandoh on 6/27/17.
  */
-public class Link extends NetworkObject {
+public class L2Object extends NetworkObject {
     private Node u;
     private Node v;
     private long bandwidth;
@@ -16,7 +16,7 @@ public class Link extends NetworkObject {
 
     private double nextAvailableTime = 0;
 
-    public Link(Node u, Node v) {
+    public L2Object(Node u, Node v) {
         super(0);
         this.u = u;
         this.v = v;
@@ -48,7 +48,7 @@ public class Link extends NetworkObject {
     }
 
     public void transfer(Packet p, Node output, DiscreteEventSimulator sim) {
-        Link self = this;
+        L2Object self = this;
         double currentTime = sim.time();
 
         long latency = serialLatency(p.getSize()) + propagationLatency();
@@ -68,7 +68,7 @@ public class Link extends NetworkObject {
 
     @Override
     public void send(NetworkObject output, DiscreteEventSimulator sim) {
-        Link self = this;
+        L2Object self = this;
         double currentTime = sim.time();
         Packet p = buffer.peek();
         Node input = output == u ? v : u;

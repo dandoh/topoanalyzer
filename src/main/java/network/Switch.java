@@ -1,8 +1,6 @@
 package network;
 
 import common.Queue;
-import common.StdOut;
-import common.Tuple;
 import config.Constant;
 import simulatedexperiment.DiscreteEventSimulator;
 import simulatedexperiment.Event;
@@ -18,7 +16,7 @@ public class Switch extends Node {
     private RoutingAlgorithm ra;
 
     // map from index to link
-    public Map<Integer, Link> links = new HashMap<>();
+    public Map<Integer, L2Object> links = new HashMap<>();
 
     public Switch(int id, RoutingAlgorithm ra) {
         super(id);
@@ -82,7 +80,7 @@ public class Switch extends Node {
 
     @Override
     public void clear() {
-        for (Map.Entry<Integer, Link> link: this.links.entrySet()) {
+        for (Map.Entry<Integer, L2Object> link: this.links.entrySet()) {
             link.getValue().clear();
         }
 

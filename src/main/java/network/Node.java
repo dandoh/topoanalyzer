@@ -12,6 +12,9 @@ public abstract class Node extends NetworkObject {
 
     @Override
     public boolean canReceive(Packet p, double time) {
+        if (maxBufferSize == -1) {
+            return true;
+        }
         return currentBufferSize + p.getSize() <= maxBufferSize;
     }
 

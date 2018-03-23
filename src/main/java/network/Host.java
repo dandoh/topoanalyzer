@@ -11,7 +11,7 @@ import simulatedexperiment.Event;
 public class Host extends Node {
 
     // link to the ToR switch
-    public Link link;
+    public L2Object link;
 
     public Host(int id) {
         super(id);

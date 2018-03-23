@@ -46,10 +46,10 @@ public class Network {
             Switch csw = switchById.get(nsid);
 
             // add to both
-            host.link = new Link(host, csw);
+            host.link = new L2Object(host, csw);
             ;
             if (!csw.links.containsKey(host.id)) {
-                csw.links.put(host.id, new Link(host, csw));
+                csw.links.put(host.id, new L2Object(host, csw));
             }
         }
 
@@ -62,10 +62,10 @@ public class Network {
                     // create new link
                     // add to both
                     if (!other.links.containsKey(swid)) {
-                        other.links.put(swid, new Link(sw, other));
+                        other.links.put(swid, new L2Object(sw, other));
                     }
                     if (!sw.links.containsKey(nsid)) {
-                        sw.links.put(nsid, new Link(sw, other));
+                        sw.links.put(nsid, new L2Object(sw, other));
                     }
                 }
             }
