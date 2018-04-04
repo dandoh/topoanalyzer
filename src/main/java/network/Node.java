@@ -1,5 +1,6 @@
 package network;
 
+import config.Constant;
 import simulatedexperiment.DiscreteEventSimulator;
 
 /**
@@ -10,17 +11,5 @@ public abstract class Node extends NetworkObject {
         super(id);
     }
 
-    @Override
-    public boolean canReceive(Packet p, double time) {
-        if (maxBufferSize == -1) {
-            return true;
-        }
-        return currentBufferSize + p.getSize() <= maxBufferSize;
-    }
-
-    @Override
-    public double getNextAvailableTime() {
-        // TODO
-        return -1;
-    }
+    public abstract L2Object processPacket(Packet p, DiscreteEventSimulator sim);
 }

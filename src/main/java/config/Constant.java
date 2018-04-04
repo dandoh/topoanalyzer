@@ -28,5 +28,6 @@ public class Constant {
 
     public static final int PACKET_INTERVAL = PACKET_SIZE;
 
-    public static final double DEFAULT_TIME_OUT = 2e7;
+    public static final double RETRY_TIME = 1000;
+    public static final double PORT_BUFFER_SIZE = 1e5;
 }

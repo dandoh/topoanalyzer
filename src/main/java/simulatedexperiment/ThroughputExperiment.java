@@ -5,6 +5,8 @@ import common.StdOut;
 import config.Constant;
 import custom.fattree.FatTreeGraph;
 import custom.fattree.FatTreeRoutingAlgorithm;
+import custom.full.FullGraph;
+import custom.full.FullRoutingAlgorithm;
 import network.Host;
 import network.Network;
 import network.Packet;
@@ -35,7 +37,7 @@ public class ThroughputExperiment {
             simulator.getEventList().add(new Event(simulator, simulator.getTime()) {
                 @Override
                 public void actions() {
-                    network.getHostById(source).receive(packet, null, simulator);
+                    network.getHostById(source).startPacket(packet, simulator);
                 }
             });
 
@@ -63,7 +65,7 @@ public class ThroughputExperiment {
                 simulator.getEventList().add(new Event(simulator, time) {
                     @Override
                     public void actions() {
-                        network.getHostById(source).receive(packet, null, simulator);
+                        network.getHostById(source).startPacket(packet, simulator);
                     }
                 });
             }
@@ -133,7 +135,7 @@ public class ThroughputExperiment {
         StdOut.printf("Thresh hold = %.2f\n", threshold);
 //        long throughput = experiment.evaluateThroughput(traffic, threshold, false);
 //        long throughput = experiment.minAveragePacketTime(traffic, true);
-        StdOut.println(experiment.measureThroughput(traffic, 1, true));
+        StdOut.println(experiment.measureThroughput(traffic, 100, true));
 
 //        StdOut.printf("Maximum frequency = %d\n", maxFrequency);
 //        StdOut.printf("\nThrough put of network %dGb/s\n", throughput / 1000000);

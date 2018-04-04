@@ -1,6 +1,7 @@
 package network;
 
 import common.Queue;
+import common.StdOut;
 import config.Constant;
 import simulatedexperiment.DiscreteEventSimulator;
 import simulatedexperiment.Event;
@@ -10,26 +11,26 @@ import simulatedexperiment.Event;
  */
 public class Host extends Node {
 
+    private Queue<Packet> buffer;
     // link to the ToR switch
     public L2Object link;
 
     public Host(int id) {
         super(id);
+        this.buffer = new Queue<>();
     }
 
-    @Override
-    public void receive(Packet p, NetworkObject source, DiscreteEventSimulator sim) {
-        this.addToBuffer(p);
+    public void startPacket(Packet p, DiscreteEventSimulator sim) {
+        buffer.enqueue(p);
         if (this.buffer.size() == 1) {
-            process(sim);
+            processPacket(p, sim);
         }
     }
 
     @Override
-    public void process(DiscreteEventSimulator sim) {
+    public L2Object processPacket(Packet p, DiscreteEventSimulator sim) {
         Host self = this;
         double currentTime = sim.getTime();
-        Packet p = buffer.peek();
 
         // Packet went to its destination
         if (id == p.getDestination()) {
@@ -37,7 +38,7 @@ public class Host extends Node {
             sim.numReceived++;
             p.setEndTime(currentTime);
             sim.totalPacketTime += p.timeTravel();
-            return;
+            return null;
         }
 
         double timeSent = currentTime + Constant.HOST_DELAY;
@@ -47,21 +48,23 @@ public class Host extends Node {
                 self.send(link, sim);
             }
         });
+        return null;
     }
 
-    @Override
-    public void send(NetworkObject link, DiscreteEventSimulator sim) {
+    public void send(L2Object link, DiscreteEventSimulator sim) {
+//        sim.log(String.format("Try to sending from host #%d", id));
         Host self = this;
-        Packet p = buffer.peek();
         double currentTime = sim.getTime();
-        if (link.canReceive(p, currentTime)) {
+        Packet p = buffer.peek();
+
+        if (link.canSend(p, this)) {
             // Host send packet to link
             sim.numSent++;
             sim.log(String.format("Host #%d sending a packet to Host #%d",
                     id, p.getDestination()));
 
-            dequeueBuffer();
-            link.receive(p, self, sim);
+            this.buffer.dequeue();
+            link.receivePacket(p, self, sim);
 
             // Schedule for the next packet in buffer
             if (!buffer.isEmpty()) {
@@ -69,17 +72,17 @@ public class Host extends Node {
                 sim.addEvent(new Event(sim, nextWakeUpTime) {
                     @Override
                     public void actions() {
-                        self.process(sim);
+                        self.processPacket(buffer.peek(), sim);
                     }
                 });
             }
         } else {
             // Schedule for current packet
-            double nextWakeUpTime = link.getNextAvailableTime();
-            sim.addEvent(new Event(sim, nextWakeUpTime) {
+            double nextTryTime = currentTime + Constant.RETRY_TIME;
+            sim.addEvent(new Event(sim, nextTryTime) {
                 @Override
                 public void actions() {
-                    self.process(sim);
+                    self.send(link, sim);
                 }
             });
         }
