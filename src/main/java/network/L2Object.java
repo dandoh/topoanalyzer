@@ -18,7 +18,7 @@ public class L2Object extends NetworkObject {
     private IntegratedPort portU;
     private IntegratedPort portV;
     private long bandwidth;
-    private long length;
+    private double length;
 
     private double nextAvailableTime = 0;
 
@@ -30,7 +30,12 @@ public class L2Object extends NetworkObject {
         portV = new IntegratedPort(v);
 
         this.bandwidth = Constant.LINK_BANDWIDTH;
-        this.length = Constant.LINK_LENGTH;
+        this.length = Constant.DEFAULT_LINK_LENGTH;
+    }
+
+    public L2Object(Node u, Node v, double length) {
+        this(u, v);
+        this.length = length;
     }
 
     public long serialLatency(int packetSize) {
@@ -48,9 +53,9 @@ public class L2Object extends NetworkObject {
         return nextAvailableTime;
     }
 
-        public void receivePacket(Packet p, Node source, DiscreteEventSimulator sim) {
-        sim.log(String.format(
-                "Link %d-%d receive a packet", source.id, (source == u ? v : u).id));
+    public void receivePacket(Packet p, Node source, DiscreteEventSimulator sim) {
+//        sim.log(String.format(
+//                "Link %d-%d receive a packet", source.id, (source == u ? v : u).id));
         IntegratedPort port = source == u ? portU : portV;
         Port outPort = port.getOutPort();
         Port inPort = (port == portU ? portV : portU).getInPort();
@@ -61,15 +66,19 @@ public class L2Object extends NetworkObject {
             }
         } else {
             sim.numLoss++;
-            sim.log(String.format("Drop a packet from %d to %d", p.getSource(), p.getDestination()));
+            StdOut.println(String.format("Drop packet #%d from Host #%d to #%d at output port at Switch #%d",
+                    p.id, p.getSource(), p.getDestination(), source.id));
+            sim.log(String.format("Drop packet #%d from Host #%d to #%d at output port at Switch #%d",
+                    p.id, p.getSource(), p.getDestination(), source.id));
         }
     }
 
     public void transferPacket(Port outPort, Port inPort, DiscreteEventSimulator sim) {
-        sim.log(String.format("Link %d-%d start transfer", u.id, v.id));
         L2Object self = this;
         double currentTime = sim.time();
         Packet p = outPort.getTopPacket();
+
+        sim.log(String.format("Link %d-%d start transfer packet #%d", u.id, v.id, p.id));
 
         long latency = serialLatency(p.getSize()) + propagationLatency();
         sim.getEventList().add(new Event(sim, currentTime + latency) {
@@ -81,11 +90,12 @@ public class L2Object extends NetworkObject {
     }
 
     public void transferCompleted(Port outPort, Port inPort, DiscreteEventSimulator sim) {
-        sim.log(String.format("Link %d-%d completed transfer", u.id, v.id));
 
         L2Object self = this;
         double currentTime = sim.time();
         Packet p = outPort.getTopPacket();
+
+        sim.log(String.format("Link %d-%d completed transfer packet #%d", u.id, v.id, p.id));
 
         outPort.removeTopPacket();
 
@@ -99,15 +109,17 @@ public class L2Object extends NetworkObject {
             });
         }
 
-        if (inPort.canReceive(p)) {
-            inPort.addPacketToBuffer(p);
+        if (inPort.addPacketToBuffer(p)) {
             if (inPort.getBuffer().size() == 1) {
                 sendToOutPort(inPort, sim);
             }
 
         } else {
             sim.numLoss++;
-            sim.log(String.format("Drop a packet"));
+            StdOut.println(String.format("Drop packet #%d from Host #%d to #%d at input port at link %d-%d",
+                    p.id, p.getSource(), p.getDestination(), u.id, v.id));
+            sim.log(String.format("Drop packet #%d from Host #%d to #%d at input port at link %d-%d",
+                    p.id, p.getSource(), p.getDestination(), u.id, v.id));
         }
     }
 
@@ -118,6 +130,7 @@ public class L2Object extends NetworkObject {
         Packet p = inPort.getTopPacket();
         L2Object nextLink = currentNode.processPacket(p, sim);
         if (nextLink != null) {
+            // Next hop is switch
             sim.getEventList().add(new Event(sim, currentTime + Constant.SWITCH_DELAY) {
                 @Override
                 public void actions() {
@@ -135,6 +148,9 @@ public class L2Object extends NetworkObject {
                     }
                 }
             });
+        } else {
+            // Next hop is host
+            inPort.removeTopPacket();
         }
     }
 //    public void nodeProcess(Packet p, Node node, DiscreteEventSimulator sim) {

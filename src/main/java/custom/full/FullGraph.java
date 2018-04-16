@@ -10,7 +10,7 @@ import java.util.List;
  * Created by mta on 7/25/17.
  */
 public class FullGraph extends Graph {
-    public static final int HOST_PER_SWITCH = 8;
+    public static final int HOST_PER_SWITCH = 1;
     private List<Integer> switches;
     private List<Integer> hosts;
 

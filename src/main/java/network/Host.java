@@ -2,6 +2,7 @@ package network;
 
 import common.Queue;
 import common.StdOut;
+import common.Tuple;
 import config.Constant;
 import simulatedexperiment.DiscreteEventSimulator;
 import simulatedexperiment.Event;
@@ -34,8 +35,9 @@ public class Host extends Node {
 
         // Packet went to its destination
         if (id == p.getDestination()) {
-            sim.log(String.format("Host #%d received packet", id));
+            sim.log(String.format("Host #%d received packet #%d", id, p.id));
             sim.numReceived++;
+            sim.receivedPacket.add(new Tuple<>(currentTime, sim.numReceived));
             p.setEndTime(currentTime);
             sim.totalPacketTime += p.timeTravel();
             return null;
@@ -60,13 +62,16 @@ public class Host extends Node {
         if (link.canSend(p, this)) {
             // Host send packet to link
             sim.numSent++;
-            sim.log(String.format("Host #%d sending a packet to Host #%d",
-                    id, p.getDestination()));
+            sim.log(String.format("Host #%d sending a packet #%d to Host #%d",
+                    id, p.id, p.getDestination()));
 
             this.buffer.dequeue();
             link.receivePacket(p, self, sim);
 
             // Schedule for the next packet in buffer
+            Packet newPacket = new Packet(sim.numSent++, p, currentTime + 1);
+            buffer.enqueue(newPacket);
+            sim.numSent++;
             if (!buffer.isEmpty()) {
                 double nextWakeUpTime = currentTime + 1;
                 sim.addEvent(new Event(sim, nextWakeUpTime) {

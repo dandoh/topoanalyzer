@@ -1,5 +1,7 @@
 package network;
 
+import config.Constant;
+import graph.Coordination;
 import graph.Graph;
 import routing.RoutingAlgorithm;
 
@@ -40,36 +42,40 @@ public class Network {
 
         // link from switch to host
         for (Host host : hosts) {
-            // get corra switch
+            // get switch
             int nsid = graph.adj(host.id)
                     .get(0);
             Switch csw = switchById.get(nsid);
 
-            // add to both
-            host.link = new L2Object(host, csw);
-            ;
-            if (!csw.links.containsKey(host.id)) {
-                csw.links.put(host.id, new L2Object(host, csw));
-            }
+            // create new link
+            L2Object link = new L2Object(host, csw, Constant.HOST_TO_SWITCH_LENGTH);
+
+            // add link to both
+            host.link = link;
+            csw.links.put(host.id, link);
         }
 
         // link from switch to switch
+        Coordination C = new Coordination(graph);
         for (Switch sw : switches) {
             int swid = sw.id;
             for (int nsid : graph.adj(swid)) {
                 if (graph.isSwitchVertex(nsid)) {
                     Switch other = switchById.get(nsid);
-                    // create new link
-                    // add to both
                     if (!other.links.containsKey(swid)) {
-                        other.links.put(swid, new L2Object(sw, other));
-                    }
-                    if (!sw.links.containsKey(nsid)) {
-                        sw.links.put(nsid, new L2Object(sw, other));
+                        // create new link
+                        L2Object link = new L2Object(sw, other, C.distanceBetween(sw.id, other.id));
+                        other.links.put(swid, link);
+                        sw.links.put(nsid, link);
+
                     }
                 }
             }
         }
+    }
+
+    public Graph getGraph() {
+        return graph;
     }
 
     public List<Host> getHosts() {

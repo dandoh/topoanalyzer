@@ -10,7 +10,8 @@ public class Constant {
     public static final long LINK_BANDWIDTH = (long) 1e9;
 
     // Default length of link ~ 5m
-    public static final int LINK_LENGTH = 5;
+    public static final double DEFAULT_LINK_LENGTH = 5;
+    public static final double HOST_TO_SWITCH_LENGTH = 0.1;
 
     // Velocity of link m/ns
     public static final double PROPAGATION_VELOCITY = 1.0 / 5;
@@ -19,9 +20,7 @@ public class Constant {
     public static final int HOST_DELAY = SWITCH_DELAY;
 
     // Packet size ~ 1Mb
-    public static final int PACKET_SIZE = (int) 1e5; // 1Mb
-
-    public static final int SWITCH_BUFFER_SIZE = (int) 1e6; // 10Mb
+    public static final int PACKET_SIZE = (int) 1e6; // 1Mb
 
     // Maximum time system
     public static final int MAX_TIME = (int) 1e9;
